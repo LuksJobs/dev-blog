@@ -1,8 +1,8 @@
 ---
 title: "Arquivos"
 date: 2019-05-28
-layout: "arquivos"
-slug: "arquivos"
+layout: "archives"
+slug: "archives"
 menu:
     main:
         weight: -70
