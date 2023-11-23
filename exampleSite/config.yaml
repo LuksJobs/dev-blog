@@ -8,10 +8,10 @@ copyright: Lucas Oliveira Dantas
 languages:
     en:
         languageName: English
-        title: Example Site
+        title: Lucas Oliveira
         weight: 1
         params:
-            description: Example description
+            description: First, solve the problem. Then, write the code.
     #zh-cn:
         #languageName: 中文
         #title: 演示站点
