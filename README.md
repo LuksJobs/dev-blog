@@ -1,28 +1,18 @@
-![image](https://user-images.githubusercontent.com/5889006/190859441-141b5f81-8483-40d2-bd96-ebf85616a46d.png)
+# Blog Pessoal de Lucas Oliveira
 
-# Hugo Theme Stack
+Este é o blog pessoal de Lucas Oliveira, um profissional de DevOps com mais de 10 anos de experiência. Aqui, você encontrará artigos sobre diversos assuntos relacionados à DevOps, incluindo desenvolvimento de software, gerenciamento de infraestrutura, automação e segurança.
 
-<img align="right" width="150" alt="logo" src="https://user-images.githubusercontent.com/5889006/190859553-5b229b4f-c476-4cbd-928f-890f5265ca4c.png">
+## Artigos
 
-Card-style Hugo theme designed for bloggers.
+Os artigos deste blog estão divididos em várias categorias, para que você possa encontrar facilmente o que está procurando. As categorias incluem:
 
-## Quickstart
+* Desenvolvimento de software
+* Gerenciamento de infraestrutura
+* Automação
+* Segurança
 
-Use this template: [CaiJimmy/hugo-theme-stack-starter](https://github.com/CaiJimmy/hugo-theme-stack-starter)
+## Contato
 
-## Demo
+Se você tiver alguma dúvida ou quiser entrar em contato comigo, você pode me enviar um e-mail para **luksjobs@live.com**
 
-* Starter template demo: [demo.stack.jimmycai.com](https://demo.stack.jimmycai.com)
-* Dev build: [dev.stack.jimmycai.com](https://dev.stack.jimmycai.com)
-
-## Documentation
-
-Visit [stack.jimmycai.com](https://stack.jimmycai.com)
-
-## Copyright
-
-**Licensed under the GNU General Public License v3.0**
-
-Please do not remove the "*Theme Stack designed by Jimmy*" text and link.
-
-If you want to port this theme to another blogging platform, please let me know🙏.
+## Obrigado por visitar meu blog!
