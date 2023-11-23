@@ -1,13 +1,13 @@
 ---
-title: About
-description: Hugo, the world's fastest framework for building websites
+title: Sobre
+description: Um pouco sobre quem eu sou, o que eu faço e quais são os meus objetivos.
 date: '2019-02-28'
 aliases:
-  - about-us
-  - about-hugo
-  - contact
+  - sobre
+  - lucas-oliveira
+  - contato
 license: CC BY-NC-ND
-lastmod: '2020-10-09'
+lastmod: '2023-10-09'
 menu:
     main: 
         weight: -90
