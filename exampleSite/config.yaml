@@ -2,8 +2,8 @@ baseurl: https://example.com
 languageCode: en-us
 theme: hugo-theme-stack
 paginate: 5
-title: Example Site
-copyright: Example Person
+title: Lucas Oliveira
+copyright: Lucas Oliveira Dantas
 
 languages:
     en:
@@ -12,19 +12,19 @@ languages:
         weight: 1
         params:
             description: Example description
-    zh-cn:
-        languageName: 中文
-        title: 演示站点
-        weight: 2
-        params:
-            description: 演示说明
-    ar:
-        languageName: عربي
-        languagedirection: rtl
-        title: موقع تجريبي
-        weight: 3
-        params:
-            description: وصف تجريبي
+    #zh-cn:
+        #languageName: 中文
+        #title: 演示站点
+        #weight: 2
+        #params:
+            #description: 演示说明
+    #ar:
+        #languageName: عربي
+        #languagedirection: rtl
+        #title: موقع تجريبي
+        #weight: 3
+        #params:
+            #description: وصف تجريبي
 
 # Change it to your Disqus shortname before using
 disqusShortname: hugo-theme-stack
@@ -61,7 +61,7 @@ params:
 
     sidebar:
         emoji: 🍥
-        subtitle: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        subtitle: First, solve the problem. Then, write the code.
         avatar:
             enabled: true
             local: true
@@ -203,13 +203,19 @@ menu:
     social:
         - identifier: github
           name: GitHub
-          url: https://github.com/CaiJimmy/hugo-theme-stack
+          url: https://github.com/LuksJobs
           params:
               icon: brand-github
+        
+        - identifier: gitlab
+          name: GitLab
+          url: https://gitlab.com/luksjobs
+          params:
+              icon: brand-gitlab
 
         - identifier: twitter
           name: Twitter
-          url: https://twitter.com
+          url: https://twitter.com/luksjobs
           params:
               icon: brand-twitter
 
