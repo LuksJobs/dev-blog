@@ -218,6 +218,12 @@ menu:
           url: https://twitter.com/luksjobs
           params:
               icon: brand-twitter
+        
+        - identifier: linkedin
+          name: linkedin
+          url: https://www.linkedin.com/in/luksjobs/
+          params:
+              icon: brand-linkedin
 
 related:
     includeNewer: true
