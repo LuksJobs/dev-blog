@@ -41,7 +41,7 @@ Nesse post o objetivo é integrar o **Node.js** com o **Vault**, iremos utilizar
 
 A imagem do Vault que iremos utilizar é baseado na imagem base do **Alpine** na versão 3.18 e com a versão do **Vault** 1.13.3
 
-[![Code](https://raw.githubusercontent.com/LuksJobs/secrets-with-vault/release/production/Dockerfile)](https://github.com/LuksJobs/secrets-with-vault/blob/release/production/Dockerfile)
+<script src="https://gist.github.com/LuksJobs/e3c93073de814ce046fdc698bbbd8fdd.js"></script>
 
 ## 1.1 Buildando a nossa imagem do Vault
 
