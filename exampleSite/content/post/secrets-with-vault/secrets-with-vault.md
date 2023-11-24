@@ -13,7 +13,7 @@ categories = [
     "docker",
     "nodejs",
 ]
-image = "secrets-vault.jpg"
+image = "https://i.imgur.com/soZxPoQ.png"
 +++
 
 # HashiCorp Vault 🔒
