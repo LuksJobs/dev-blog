@@ -16,8 +16,6 @@ categories = [
 image = "https://i.imgur.com/soZxPoQ.png"
 +++
 
-# HashiCorp Vault 🔒
-
 ## Visão Geral 
 
 O HashiCorp Vault é uma ferramenta projetada para armazenar e gerenciar informações sensíveis de forma segura, como chaves de API, senhas, certificados e muito mais. Ele fornece uma solução centralizada para gerenciamento de segredos e controle de acesso. 
