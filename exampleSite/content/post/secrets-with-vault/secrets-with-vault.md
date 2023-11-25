@@ -175,9 +175,9 @@ vault policy write list-secrets-policy list-secrets-policy.hcl
 Aplicar a política aos usuários:
 
 ```
-vault write auth/userpass/users/leonardo.matos policies=list-secrets-policy
 vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
-vault write auth/userpass/users/arquinael.filho policies=list-secrets-policy
+vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
+vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
 ```
 
 ---
