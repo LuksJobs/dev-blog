@@ -55,25 +55,7 @@ docker build . -t vault:prd
 
 Agora que temos nossa imagem preparada, precisaremos instruir como iremos levantar nosso container Docker e iremos fazer isso utilizando o Docker Compose:
 
-```
-version: '3'
-services:
-  vault_production:
-    image: vault:prd
-    container_name: vault
-    environment:
-      VAULT_ADDR: http://127.0.0.1:8200
-    ports:
-      - "8200:8200"
-    restart: always
-    volumes:
-      - ./private-volume:/vault/file:rw
-      - ./vault:/vault/config:rw
-    cap_add:
-      - IPC_LOCK
-    entrypoint: vault server -config=/vault/config/vault.json
-```
-
+<script src="https://gist.github.com/LuksJobs/9118a06d73a7ceb3c4324d278411ef00.js"></script>
 
 ## 3. Executando o Container
 
