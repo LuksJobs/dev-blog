@@ -73,43 +73,77 @@ $ docker exec -it vault vault operator init -n 2 -t 2
 
 Esse comando irá gerar duas chaves para acesso ao banco de dados, 🚩 é de extrema importância guardar as chaves e o Token que foram gerados em um local seguro!
 
+# Criando o SecretID e o APP Role
+
+## Habilitar o APP Role
+
+O **AppRole** no Vault é um mecanismo de autenticação que permite que aplicativos e serviços se autentiquem e obtenham tokens de acesso para acessar recursos no Vault. Ele fornece uma maneira segura para que aplicativos se autentiquem e obtenham tokens de autenticação sem a necessidade de credenciais de usuário.
+
+```
+vault auth enable approle
+```
+
+Execute o seguinte comando para criar o AppRole "`node-app-role`" e definir as políticas associadas a ele:
+
+```
+vault write auth/approle/role/node-app-role \
+    token_ttl=1h \
+    token_max_ttl=4h \
+    token_policies=default
+
+resultado esperado:
+
+Success! Data written to: auth/approle/role/node-app-role
+```
+
+Após criar o AppRole, você pode obter as informações do "`role-id`" usando o seguinte comando:
+
+```
+vault read auth/approle/role/node-app-role/role-id
+
+resultado esperado:
+
+Key                   Value
+---                   -----
+secret_id             000000000000000000000000000000000000
+secret_id_accessor    000000000000000000000000000000000000
+secret_id_num_uses    0
+secret_id_ttl         0s
+```
+
+## SecretID
+
+Agora iremos gerar um "`secret-id`" para nosso "node-app-role" recentemente criado: 
+
+```
+vault write -f auth/approle/role/node-app-role/secret-id
+
+
+resultado esperado:
+
+Key                   Value
+---                   -----
+secret_id             000000000000000000000000000000000000
+secret_id_accessor    000000000000000000000000000000000000
+secret_id_num_uses    0
+secret_id_ttl         0s
+```
+
 # Relizando Conexão do NodeJS com o Vault
 
-Para fazer com que uma aplicação em Node.js consuma a chave "kv" (key value) no seu Vault, você pode usar a biblioteca cliente do Vault para Node.js. Aqui está um exemplo de como fazer isso: 
+Certifique-se de que as **variáveis** de ambiente (**ROLE_ID** e **SECRET_ID**) estejam configuradas corretamente no seu ambiente de execução para garantir uma autenticação bem-sucedida. Este é um exemplo básico, e na prática, você pode precisar ajustar e expandir o código de acordo com as necessidades específicas do seu projeto e da sua configuração do Vault.
+
+![Gitlab ENV](https://i.imgur.com/uCiUAqs.png) 
+
+Nesse caso, declarei a variável de ambiente "**Secret_ID**" nas variáveis de ambiente do CI/CD do Gitlab; Pois o objeto é que em um estágio da minha pipeline, esse secret id seja adicionado no arquivo ".env" e que seja buildado em nossa aplicação, no caso, imagem docker;
  
-1. Instale a biblioteca cliente do Vault executando  npm install node-vault  no diretório do seu projeto Node.js. 
- 
-2. Importe a biblioteca do Vault na sua aplicação Node.js:
+Seguindo essas etapas, sua aplicação Node.js será capaz de consumir segredos armazenados na engine do seu servidor Vault. Lembre-se de tratar erros adequadamente e implementar mecanismos de tratamento de erros e autenticação apropriados, de acordo com os requisitos da sua aplicação.
 
-```
-const vault = require('node-vault')();
-```
+## Exemplo de conexão para consumir o Secret
 
-3. Configure o cliente do Vault com o endpoint e o método de autenticação apropriados:
+<script src="https://gist.github.com/LuksJobs/b20768e0442562a3ece3f2372dbe2589.js"></script>
 
-```
-vault.options({
-  apiVersion: 'v1',
-  endpoint: 'http://seu-servidor-vault:8200',
-  token: 'seu-token-vault',
-});
-```
-
-Substitua  'http://seu-servidor-vault:8200' pela URL do seu servidor Vault e  'seu-token-vault'  por um token válido que tenha acesso às chaves. 
- 
-4. Recupere o segredo do "kv" engine:
-
-```
-const caminhoSegredo = 'secret/meuapp/config'; // Caminho para o seu segredo no engine "kv"
-const resposta = await vault.read(caminhoSegredo);
-const dadosSegredo = resposta.data;
-```
-
-Substitua  `'secret/meuapp/config'`  pelo caminho real para o seu segredo dentro do engine "kv". 
- 
-5. Agora você pode usar o objeto  dadosSegredo  na sua aplicação para acessar os valores do segredo recuperado. 
- 
-Seguindo essas etapas, sua aplicação Node.js será capaz de consumir segredos armazenados no engine "kv" do seu servidor Vault. Lembre-se de tratar erros adequadamente e implementar mecanismos de tratamento de erros e autenticação apropriados, de acordo com os requisitos da sua aplicação.
+Este código é um exemplo de como usar o NodeVault para se autenticar no HashiCorp Vault usando **AppRole**, o objetivo é obter um token de acesso, e então ler informações sensíveis (como credenciais de banco de dados) armazenadas no Vault.
 
 ---
 
@@ -166,13 +200,13 @@ path "sys/tools/hash/*" {
 }
 ```
 
-Aplicar a política ao Vault: 
+## Aplicar a política ao Vault: 
 
 ```
 vault policy write list-secrets-policy list-secrets-policy.hcl
 ```
 
-Aplicar a política aos usuários:
+## Aplicar a política aos usuários:
 
 ```
 vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
@@ -180,56 +214,6 @@ vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
 vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
 ```
 
----
+## Conclusão 
 
-### Habilitar o APP Role
-
-O AppRole no Vault é um mecanismo de autenticação que permite que aplicativos e serviços se autentiquem e obtenham tokens de acesso para acessar recursos no Vault. Ele fornece uma maneira segura para que aplicativos se autentiquem e obtenham tokens de autenticação sem a necessidade de credenciais de usuário.
-
-```
-vault auth enable approle
-```
-
-Execute o seguinte comando para criar o AppRole "`node-app-role`" e definir as políticas associadas a ele:
-
-```
-vault write auth/approle/role/node-app-role \
-    token_ttl=1h \
-    token_max_ttl=4h \
-    token_policies=default
-
-resultado esperado:
-
-Success! Data written to: auth/approle/role/node-app-role
-```
-
-Após criar o AppRole, você pode obter as informações do "`role-id`" usando o seguinte comando:
-
-```
-vault read auth/approle/role/node-app-role/role-id
-
-resultado esperado:
-
-Key                   Value
----                   -----
-secret_id             000000000000000000000000000000000000
-secret_id_accessor    000000000000000000000000000000000000
-secret_id_num_uses    0
-secret_id_ttl         0s
-```
-
-Agora iremos gerar um "`secret-id`" para nosso "node-app-role" recentemente criado: 
-
-```
-vault write -f auth/approle/role/node-app-role/secret-id
-
-
-resultado esperado:
-
-Key                   Value
----                   -----
-secret_id             000000000000000000000000000000000000
-secret_id_accessor    000000000000000000000000000000000000
-secret_id_num_uses    0
-secret_id_ttl         0s
-```
+Certifique-se de que as variáveis de ambiente (**ROLE_ID** e **SECRET_ID**) estejam configuradas corretamente no seu ambiente de execução para garantir uma autenticação bem-sucedida. Este é um exemplo básico, e na prática, você pode precisar ajustar e expandir o código de acordo com as necessidades específicas do seu projeto e da sua configuração do Vault.
