@@ -73,6 +73,105 @@ $ docker exec -it vault vault operator init -n 2 -t 2
 
 Esse comando irá gerar duas chaves para acesso ao banco de dados, 🚩 é de extrema importância guardar as chaves e o Token que foram gerados em um local seguro!
 
+### Conectando ao Vault via linha de comando (CLI)
+
+Para conectar-se ao Vault, via linha de comando é necessário  primeiro instalar a linha executar o comando abaixo: 
+
+* Existe várias maneiras de realizar essa instalação, caso tenha dúvidas acesse o link da documentação: https://developer.hashicorp.com/vault/docs/install
+
+Em nosso caso, iremos instalar via pacote: 
+
+```
+ 1. sudo apt update && sudo apt install gpg
+```
+Baixando o pacote de Instalação da CLI do Vault:
+```
+2. wget https://releases.hashicorp.com/vault/1.15.2/vault_1.15.2_linux_amd64.zip
+``` 
+
+
+Em seguida, descompacte o pacote usando o seguinte comando:
+
+
+```
+3. unzip vault_1.15.2_linux_amd64.zip
+```
+Depois, mova o pacote para o diretório /usr/bin:
+
+```
+4 mv vault /usr/bin
+```
+
+Verifique a instalação usando o seguinte comando:
+```
+5. vault -v
+```
+
+Agora com a linha de comando instalada, poderemos nos conectar ao nosso Vault que está rodando em container Docker bastando apontar o ip e porta ou então DNS de onde ele está rodando:
+
+```
+$ export VAULT_ADDR='http://seu-servidor-vault:8200'
+```
+
+Metódo de login utilizando "username" e "password":
+
+```
+$ vault login -method=userpass username=lucas.dantas
+```
+Metódo de login por linha de comando utilizando o "Token":
+
+```
+$ vault login -method=token
+```
+
+### Criando política de acesso 
+
+Política de acesso: `list-secrets-policy.hcl`(arquivo de texto com extensão ".hcl")`
+
+```
+path "secret/metadata"
+{
+  capabilities = [ "list" ]
+}
+
+path "secret/metadata/*"
+{
+  capabilities = [ "list", "read" ]
+}
+
+# Allow a token to manage its own credentials
+path "credentials/*" {
+    capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+# Allow a token to look up its own capabilities on a path
+path "sys/capabilities-self" {
+    capabilities = ["update"]
+}
+
+# Allow general purpose tools
+path "sys/tools/hash" {
+    capabilities = ["update"]
+}
+path "sys/tools/hash/*" {
+    capabilities = ["update"]
+}
+```
+
+## Aplicar a política ao Vault: 
+
+```
+vault policy write list-secrets-policy list-secrets-policy.hcl
+```
+
+## Aplicar a política aos usuários:
+
+```
+vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
+vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
+vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
+```
+
 # Criando o SecretID e o APP Role
 
 ## Habilitar o APP Role
@@ -146,73 +245,6 @@ Seguindo essas etapas, sua aplicação Node.js será capaz de consumir segredos 
 Este código é um exemplo de como usar o NodeVault para se autenticar no HashiCorp Vault usando **AppRole**, o objetivo é obter um token de acesso, e então ler informações sensíveis (como credenciais de banco de dados) armazenadas no Vault.
 
 ---
-
-### Comandos Úteis
-
-Para conectar-se ao Vault, via linha de comando é necessário executar o comando abaixo: 
-
-```
-$ export VAULT_ADDR='http://seu-servidor-vault:8200'
-```
-
-Metódo de login utilizando "username" e "password":
-
-```
-$ vault login -method=userpass username=lucas.dantas
-```
-Metódo de login por linha de comando utilizando o "Token":
-
-```
-$ vault login -method=token
-```
-
-### Criando política de acesso 
-
-Política de acesso: `list-secrets-policy.hcl`(arquivo de texto com extensão ".hcl")`
-
-```
-path "secret/metadata"
-{
-  capabilities = [ "list" ]
-}
-
-path "secret/metadata/*"
-{
-  capabilities = [ "list", "read" ]
-}
-
-# Allow a token to manage its own credentials
-path "credentials/*" {
-    capabilities = ["create", "read", "update", "delete", "list"]
-}
-
-# Allow a token to look up its own capabilities on a path
-path "sys/capabilities-self" {
-    capabilities = ["update"]
-}
-
-# Allow general purpose tools
-path "sys/tools/hash" {
-    capabilities = ["update"]
-}
-path "sys/tools/hash/*" {
-    capabilities = ["update"]
-}
-```
-
-## Aplicar a política ao Vault: 
-
-```
-vault policy write list-secrets-policy list-secrets-policy.hcl
-```
-
-## Aplicar a política aos usuários:
-
-```
-vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
-vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
-vault write auth/userpass/users/lucas.dantas policies=list-secrets-policy
-```
 
 ## Conclusão 
 
