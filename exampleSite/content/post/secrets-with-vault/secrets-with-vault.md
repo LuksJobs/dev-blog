@@ -37,7 +37,7 @@ Nesse post o objetivo é integrar o **Node.js** com o **Vault**, iremos utilizar
 
  O Vault pode ser executado em vários ambientes, só que nesse post, iremos utilizar containers Docker. 
 
-[![GitHub](logotipo-do-github.png](https://raw.githubusercontent.com/LuksJobs/secrets-with-vault/) - Repositório do Vault utilizado nesse post. 
+[![GitHub](https://i.imgur.com/csGXThh.png](https://raw.githubusercontent.com/LuksJobs/secrets-with-vault/) - Repositório do Vault utilizado nesse post. 
 
 ## 1. Dockerfile 
 
