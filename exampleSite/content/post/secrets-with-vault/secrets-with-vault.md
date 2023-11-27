@@ -22,6 +22,8 @@ O HashiCorp Vault é uma ferramenta projetada para armazenar e gerenciar informa
 
 ## Caso de Uso
 
+![Diagrama](https://i.imgur.com/Z0tWhJR.png)
+
 Nesse post o objetivo é integrar o **Node.js** com o **Vault**, iremos utilizar a imagem Docker do Vault. Dessa forma subiremos uma API para interagir com o Vault. Armazenar segredos no Vault é melhor do que armazenar segredos em arquivos do tipo ".env" porque o Vault fornece uma maneira mais segura de armazenar segredos. O Vault usa criptografia para proteger os segredos, o que significa que eles não podem ser acessados por pessoas não autorizadas. Além disso, o Vault permite controlar quem pode acessar quais segredos, o que ajuda a proteger os segredos de serem usados indevidamente. 
  
 ## Recursos do Vault
@@ -37,7 +39,7 @@ Nesse post o objetivo é integrar o **Node.js** com o **Vault**, iremos utilizar
 
  O Vault pode ser executado em vários ambientes, só que nesse post, iremos utilizar containers Docker. 
 
-![GitHub](https://i.imgur.com/csGXThh.png) - https://raw.githubusercontent.com/LuksJobs/secrets-with-vault/ (Repositório do Vault utilizado nesse post) 
+![GitHub](https://i.imgur.com/csGXThh.png) — https://github.com/LuksJobs/secrets-with-vault (Repositório do Vault utilizado nesse post) 
 
 ## 1. Dockerfile 
 
