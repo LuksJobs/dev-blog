@@ -37,6 +37,9 @@ Nesse post o objetivo é integrar o **Node.js** com o **Vault**, iremos utilizar
 
  O Vault pode ser executado em vários ambientes, só que nesse post, iremos utilizar containers Docker. 
 
+[![Code](https://raw.githubusercontent.com/LuksJobs/secrets-with-vault/master/README.md)](https://github.com/LuksJobs/secrets-with-vault/blob/master/README.md)
+
+
 ## 1. Dockerfile 
 
 A imagem do Vault que iremos utilizar é baseado na imagem base do **Alpine** na versão 3.18 e com a versão do **Vault** 1.13.3
