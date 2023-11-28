@@ -12,6 +12,8 @@ tags = [
 
 O objetivo desse artigo é te ensinar a realizar a previsão dos títulos e das tags das tecnologias e linguagens de programação com base em perguntas mais frequentes criadas em 'chamados' do **GLPI**, utilizamos um conjunto de dados importados da base de dados de homologação do **Help Desk** da empresa que trabalho, lógico que "peneiramos" todos os dados sensiveis.
 
+![GitHub](https://i.imgur.com/csGXThh.png) — https://github.com/Devopeiros/previsao-pln-publico (Repositório do **Notebook** utilizado nesse post) 
+
 ## Estudo de Caso
 
 O **Problema de Negócio** que queremos resolver é `realizar predições das respectivas tags a partir das perguntas geradas` através da ferramenta de Help Desk da Unimed Natal: GLPI no qual faremos o treinamento do modelo através do aprendizado de máquina com algoritmo supervisionado.
@@ -36,39 +38,7 @@ Para nosso estudo de caso, vamos fazer uso das seguintes bibliotecas:
 
 ## Importando o Dataset e Stopwords
 
-```
-# importando as bibliotecas
-import nltk
-from nltk.corpus import stopwords
-
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-from ast import literal_eval
-import re
-from collections import Counter
-from itertools import chain
-
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.preprocessing import MultiLabelBinarizer
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.linear_model import LogisticRegression, RidgeClassifier
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import f1_score
-from sklearn.metrics import roc_auc_score 
-from sklearn.metrics import average_precision_score
-from sklearn.metrics import recall_score
-#from metrics import roc_auc #deu erro na importação da biblioteca "metrics"
-
-nltk.download('stopwords') # caso a lista esteja desatualizada
-
-#importando as stopswords do diretório local
-#stopwords = stopwords.words("portuguese", searchpath=nltk_data/corpora/stopwords)
-%matplotlib inline
-```
+<script src="https://gist.github.com/LuksJobs/dead80a1ca3f5cbbd98444df0d9b4f9c.js"></script>
 
 Neste projeto, contaremos com 2 conjuntos de dados: **treino** (train) e **validação** (validation), no qual é composto por `títulos` e suas `tags` correspondentes (somente essas duas colunas).
 
