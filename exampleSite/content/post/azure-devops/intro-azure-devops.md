@@ -1,7 +1,8 @@
 +++
 author = "Lucas Oliveira"
-title = "Template para pipeline no Azure Devops"
-date = "2023-08-02"
+title = "Introdução ao Azure Devops: Template para pipeline Docker"
+date = "2023-04-02"
+image = "https://external-preview.redd.it/azure-devops-pipeline-deployments-to-azure-apps-with-access-v0-WeY93nQLvqCDA51pxPpMUp1XjvtPCF53mil6zxC05Uw.jpg?auto=webp&s=87741c35bfba718514686ce27bdb916db5da1cdd"
 description = "As pipelines do Azure DevOps são uma ferramenta poderosa para automatizar e gerenciar o fluxo de trabalho de desenvolvimento de software."
 tags = [
     "pipeline",
@@ -15,55 +16,7 @@ Com as pipelines do `Azure DevOps`, você pode definir etapas e tarefas personal
 
 O template abaixo pode ser usado como um ponto de entrada inicial para seus pipelines de DevOps. Ele foi projetado levando em consideração as melhores práticas, com estágios e jobs para isolar diferentes funcionalidades e torná-lo modular. Você pode incluir mais estágios, jobs e tarefas copiando e colando o código.
 
-```
-trigger:
-  branches:
-    include:
-      - main
-
-pool:
-  vmImage: 'ubuntu-latest'
-
-stages:
-- stage: Build
-  displayName: 'Build Stage'
-  jobs:
-  - job: BuildJob
-    displayName: 'Build Job'
-    steps:
-    - script: |
-        echo 'Building the application...'
-        # Comandos para compilar o código fonte
-      displayName: 'Build Application'
-
-- stage: Test
-  displayName: 'Test Stage'
-  dependsOn: Build
-  jobs:
-  - job: TestJob
-    displayName: 'Test Job'
-    steps:
-    - script: |
-        echo 'Running tests...'
-        # Comandos para executar testes automatizados
-      displayName: 'Run Tests'
-
-- stage: Deploy
-  displayName: 'Deployment Stage'
-  dependsOn: Test
-  jobs:
-  - deployment: DeployJob
-    displayName: 'Deployment Job'
-    environment: 'production'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - script: |
-              echo 'Deploying the application...'
-              # Comandos para implantar a aplicação em um ambiente de produção
-            displayName: 'Deploy Application'
-```
+<script src="https://gist.github.com/LuksJobs/02a9605f09b50332a0fa532dcb210b34.js"></script>
 
 ## Se tudo tiver dado certo, esse é o resultado esperado:
 
