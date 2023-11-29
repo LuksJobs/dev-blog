@@ -2,8 +2,13 @@
 author = "Lucas Oliveira"
 title = "Introdução ao Azure Devops: Template para pipeline Docker"
 date = "2023-04-02"
-image = "https://external-preview.redd.it/azure-devops-pipeline-deployments-to-azure-apps-with-access-v0-WeY93nQLvqCDA51pxPpMUp1XjvtPCF53mil6zxC05Uw.jpg?auto=webp&s=87741c35bfba718514686ce27bdb916db5da1cdd"
+image = "https://media.architecturaldigest.com/photos/6312123d2e2056d449048be5/16:9/w_1280,c_limit/MAF_20220830__KSC_Artemis1_epb_005_medium.jpeg"
 description = "As pipelines do Azure DevOps são uma ferramenta poderosa para automatizar e gerenciar o fluxo de trabalho de desenvolvimento de software."
+categories = [
+    "azure-devops",
+    "pipeline",
+    "automação",
+]
 tags = [
     "pipeline",
     "azure devops",
