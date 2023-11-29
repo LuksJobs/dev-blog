@@ -1,8 +1,9 @@
 +++
 author = "Lucas Oliveira"
-title = "Treinando um Módelo de Machine Learning com Regressão Logística e Processamento de Linguagem Natural"
+title = "Treinando um Modelo de Machine Learning com Regressão Logística e Processamento de Linguagem Natural"
 date = "2023-11-10"
 description = "O objetivo desse artigo é te ensinar a realizar a Regressão lógica"
+image = "https://i.imgur.com/6ghHEKR.png"
 tags = [
     "machine-learning",
     "analise-de-dados",

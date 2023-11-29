@@ -18,31 +18,6 @@ Neste post, irei falar sobre o **HPA** que significa "*Horizontal Pod Autoscaler
 
 O objetivo de um **HPA** é garantir que sua aplicação tenha recursos suficientes para lidar com a demanda. Se a utilização de recursos aumentar, o HPA aumentará o número de réplicas (aumenta a quantidade de pods em execução) para garantir que a carga seja distribuída adequadamente. Da mesma forma, se a utilização diminuir, o HPA reduzirá o número de réplicas, economizando recursos. Isso ajuda a manter a escalabilidade e o desempenho da sua aplicação de forma automática e eficiente.
 
-```
-apiVersion: autoscaling/v2b
-kind: HorizontalPodAutoscaler
-metadata:
-  name: meu-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: meu-deployment #mesmo nome que está definido no seu arquivo de deployment
-  minReplicas: 1  #quantidade mínima de replicas de um POD
-  maxReplicas: 10 #quantidade máxima de criação de replicas de POD
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 80 #ao bater 80% de CPU, crie um novo pod
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80 #ao bater 80% de memória, crie um novo pod
-```
+<script src="https://gist.github.com/LuksJobs/7d4c9e2c7b1e4d94ac30163c897bf0b9.js"></script>
 
 Certifique-se de substituir o nome: "**meu-hpa**" pelo nome desejado para o HPA e **meu-deployment** pelo nome do seu deployment ao qual o HPA será aplicado. Isso garantirá que o HPA ajuste automaticamente o número de réplicas do seu deployment com base no uso de recursos de memória e CPU, mantendo-os em torno de 80% de utilização.
