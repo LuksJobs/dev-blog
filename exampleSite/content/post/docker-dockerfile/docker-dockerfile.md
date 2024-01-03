@@ -7,6 +7,9 @@ image = "https://i.imgur.com/UYrnMfy.png"
 tags = [
     "docker", "devops",
 ]
+categories = [
+    "docker",
+]
 +++
 
 Um **Dockerfile** é um arquivo de texto simples que contém uma lista de comandos que o cliente do Docker chama durante a criação de uma imagem. É uma maneira simples de automatizar o processo de criação de imagens. Em essência, é uma lista de comandos que o mecanismo do Docker executa para montar a imagem e, assim, instâncias de imagens como contêineres.
