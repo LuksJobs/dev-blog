@@ -3,10 +3,14 @@ author = "Lucas Oliveira"
 title = "Configurando a Prioridade de Execução de um POD"
 date = "2023-07-28"
 description = "No Kubernetes, os pods podem ter diferentes tipos de prioridade para determinar sua ordem de execução."
+image = "https://i.imgur.com/X9OwRBv.png"
 tags = [
     "kubernetes",
     "devops",
     "pod",
+]
+categories = [
+    "kubernetes",
 ]
 +++
 
@@ -30,19 +34,7 @@ Além desses tipos de prioridade, o Kubernetes também suporta recursos como lim
 
 O exemplo a seguir mostra um objeto `priorityClassName` De um pod "Nginx" que usa o PriorityClassName:
 
-```
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx-pod
-spec:
-  priorityClassName: high-priority
-  containers:
-  - name: web
-    image: nginx:latest
-    imagePullPolicy: IfNotPresent
-  priorityClassName: high-priority-apps
-```
+<script src="https://gist.github.com/LuksJobs/73945bb974ff00bc58aec0159a070a98.js"></script>
 
 Neste exemplo, o campo  `priorityClassName`  está definido como "`high-priority`". Isso se refere a uma classe de prioridade que você definiu em seu cluster. Você pode criar uma classe de prioridade usando o recurso  `PriorityClass`:
 
@@ -58,29 +50,7 @@ No recurso `PriorityClass`, você pode especificar um nome para a classe de prio
  
 Ao definir o priorityClassName na especificação do pod, você atribui a classe de prioridade correspondente ao pod. Isso ajuda o Kubernetes a priorizar o agendamento e a alocação de recursos do pod com base em sua prioridade em comparação com outros pods no cluster.
 
-```
-apiVersion: scheduling.k8s.io/v1
-kind: PriorityClass
-metadata:
-  name: high-priority-apps
-value: 1000000
-preemptionPolicy: PreemptLowerPriority
-globalDefault: false
-description: "Aplicação crítica."
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-  labels:
-    env: dev
-spec:
-  containers:
-  - name: web
-    image: nginx:latest
-    imagePullPolicy: IfNotPresent
-  priorityClassName: high-priority-apps
-```
+<script src="https://gist.github.com/LuksJobs/e4133385c57dbd96517bb79d9fec75e5.js"></script>
 
 Vamos analisar o que cada parte do arquivo faz: 
  
