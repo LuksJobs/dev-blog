@@ -3,6 +3,7 @@ author = "Lucas Oliveira"
 title = "Dockerfile, a receita de bolo do Docker (Guia Prático)"
 date = "2019-09-22"
 description = "Iremos dockerizar uma aplicação em NodeJS utilizando o Docker Compose"
+image = "https://i.imgur.com/UYrnMfy.png"
 tags = [
     "docker", "devops",
 ]
