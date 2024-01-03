@@ -7,6 +7,9 @@ image = "https://i.imgur.com/WMMXkQn.png"
 tags = [
     "docker", "devops","docker-compose"
 ]
+categories = [
+    "docker",
+]
 +++
 
 **Docker Compose** é uma ferramenta de *orquestração de contêineres* que permite agrupar vários serviços de contêiner em uma única aplicação. Ele é usado para definir e gerenciar aplicações em contêineres de forma simples e eficiente.
