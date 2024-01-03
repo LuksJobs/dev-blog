@@ -4,9 +4,11 @@ title = "Gitlab CI para construção de imagens Docker, criação de tags no Git
 date = "2023-07-26"
 image = "https://i.imgur.com/v8f4vqF.png"
 description = "Pipeline do GitLab CI para construir contêineres Docker, adicionar tags ao código no Git e enviar o novo contêiner gerado para o seu registro de imagens Docker."
+categories = [
+    "cicd",
+]
 tags = [
     "docker",
-    "gitlab",
     "cicd",
 ]
 +++
