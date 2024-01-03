@@ -2,6 +2,7 @@
 author = "Lucas Oliveira"
 title = "Gitlab CI para construção de imagens Docker, criação de tags no Git e envio para o registro Docker"
 date = "2023-07-26"
+image = "https://i.imgur.com/v8f4vqF.png"
 description = "Pipeline do GitLab CI para construir contêineres Docker, adicionar tags ao código no Git e enviar o novo contêiner gerado para o seu registro de imagens Docker."
 tags = [
     "docker",
@@ -30,75 +31,7 @@ Uma vez que suas imagens Docker estejam construídas e suas tags estejam definid
 
 Na raiz do seu repositório crie um arquivo chamado de `".gitlab-ci.yml"`, esse arquivo será responsável pelas configurações definidas nos estágios do seu pipeline:
 
-```
-image: docker:latest
-services:
-    - docker:dind
-stages:
-    - Dev
-    - Prod-Tag
-    - Prod-publish
-
-variables:
-    REGISTRY: seuregistro.com.br
-    REPOSITORY: suaimagem/docker 
-
-before_script:
-    # verificando a VERSÃO do arquivo
-    - chmod +x script.sh; ./script.sh
-    - if [ ! -f VERSION ]; then echo "A versão dessa imagem não foi encotrada!"; exit 1; else export VERSION=$(cat VERSION); fi
-    - 'echo "Executando Pipeline para a imagem: $REGISTRY/$REPOSITORY:${VERSION}"'
-
-build:
-    stage: Dev
-    script:
-        - docker build -t $REGISTRY/$REPOSITORY .
-    tags:
-        - node-busy
-    only:
-        - branch-específica
-
-publish:
-    stage: Prod-publish
-    dependencies:
-        - build
-        - docker-tag
-    script:
-        # carrengando as variáveis "$REGISTRY_USER" e "$REGISTRY_PW" 
-        - if [ -z ${REGISTRY_USER+x} ]; then echo "REGISTRY_USER não definida!"; exit 1; fi
-        - if [ -z ${REGISTRY_PW+x} ]; then echo "REGISTRY_PW não definida!"; exit 1; fi
-        # login no registro docker (Harbor)
-        - docker login -u $REGISTRY_USER -p $REGISTRY_PW $REGISTRY
-        # verificando as imagens antigas (Host)
-        #- docker load -i image.tar
-        # Enviando a nova imagem ao repositório (Harbor)
-        - docker tag $REGISTRY/$REPOSITORY:latest $REGISTRY/$REPOSITORY:$VERSION
-        - docker push $REGISTRY/$REPOSITORY:$VERSION
-    tags:
-        - node-busy
-    only:
-        - branch-específica
-
-docker-tag:
-    image: python:3.7-stretch
-    stage: Prod-Tag
-    dependencies:
-        - build
-    script:
-        - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-        # utilizando a chave ssh para realizar o tagueamento da nova imagem
-        - ssh-keyscan gitlab.com >> ~/.ssh/known_hosts && chmod 644 ~/.ssh/known_hosts
-        - eval $(ssh-agent -s)
-        #- echo -n "$SSH_DEPLOY_KEY" | tr -d '\r' | ssh-add - > /dev/null
-        - chmod +x tag.py
-        - ./tag.py
-    #when: manual
-    allow_failure: false
-    tags:
-        - node-busy
-    only:
-        - branch-específica
-```
+<script src="https://gist.github.com/LuksJobs/81c99ccfbced1b2c1d6d133a16c9f412.js"></script>
 
 ## Variáveis de Ambiente do Gitlab
 
@@ -137,54 +70,7 @@ VERSION =0.0.1
 
 Agora será necessário criar o script que irá versionar o nosso repositório do Gitlab:
 
-`tag.py`
-
-```
-#!/usr/bin/env python3
-import os
-import re
-import sys
-import subprocess
-
-
-def git(*args):
-    return subprocess.check_output(['git'] + list(args))
-
-
-def tag_repo(tag):
-    url = os.environ['CI_REPOSITORY_URL']
-
-    # "Transforma a URL do repositório para a URL SSH"
-    # Exemplo de entrada: https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@gitlab.com/luksjobs/pipelineexample.git
-    # Exemplo de saída: gitlab.com/luksjobs/pipelineexample.git
-
-    push_url = re.sub(r'.+@([^/]+)/', r'git@\1:', url)
-
-    git('remote', 'set-url', '--push', 'origin', push_url)
-    git('tag', tag)
-    git('push', 'origin', tag)
-
-
-def main():
-    if 'VERSION' not in os.environ:
-        print('VERSÃO não definida')
-        return -1
-    version = os.environ['VERSION']
-
-    # verifique se a versão já existe
-    tags = git('describe', '--tags', '--always').decode().strip()
-    if version in tags:
-        print('Essa versão de imagem: "',version,'" já existe! ლ(ಠ益ಠლ)')
-        return -1
-
-    tag_repo(version)
-
-    return 0
-
-
-if __name__ == '__main__':
-    sys.exit(main())
-```
+<script src="https://gist.github.com/LuksJobs/836289698230b5ca44c76befdfdd7b07.js"></script>
 
 Esse script forçará o uso de uma nova tag sempre que um novo commit ou merge request subir para a branch especificada no CI; E esse estágio será o estágio que tanto adicionará uma nova tag ao repositório do gitlab quanto ao tag utilizado na imagem Docker.
 
