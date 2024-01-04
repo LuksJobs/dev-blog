@@ -9,9 +9,7 @@ tags = [
     "docker",
 ]
 categories = [
-    "vault",
     "docker",
-    "nodejs",
 ]
 image = "https://i.imgur.com/soZxPoQ.png"
 +++

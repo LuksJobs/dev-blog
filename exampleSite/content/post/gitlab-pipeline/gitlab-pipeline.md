@@ -9,7 +9,7 @@ categories = [
 ]
 tags = [
     "docker",
-    "cicd",
+    "ci/cd",
 ]
 +++
 

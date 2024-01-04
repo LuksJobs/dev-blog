@@ -5,7 +5,7 @@ date = "2023-08-01"
 description = "Para quem utiliza as tags do Gitlab e quer automatizar o processo de exclusão, eis aqui uma solução!"
 image = "https://i.imgur.com/m41BoXD.jpg"
 categories = [
-    "cicd"
+    "ci/cd"
 ]
 tags = [
     "gitlab",
