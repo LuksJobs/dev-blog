@@ -1,9 +1,9 @@
 +++
 author = "Lucas Oliveira"
-title = "Como remediar problemas de segurança descobertos pelo Docker Scout "
+title = "Como remediar problemas de segurança em imagens Docker descobertos pelo Docker Scout "
 date = "2024-01-06"
 description = "Nesse post iremos escanear uma aplicação em Node JS utilizando o Docker Scout pela linha de comando (CLI)"
-image = "docker-scout.jpg"
+image = "https://raw.githubusercontent.com/LuksJobs/dev-blog/c02436828a584dded3e400b0ae68cfe862c8dd47/exampleSite/content/post/docker-scout/docker-scout.jpg"
 tags = [
     "docker", "devops", "docker-scout",
 ]
@@ -28,14 +28,14 @@ O Docker Scout está disponível como um pacote Docker, extensão do Docker Desk
 ```bash
 $ docker login 
 ```
-![dockerlogin](1dockerlogin.png)
+![dockerlogin](https://raw.githubusercontent.com/LuksJobs/dev-blog/c02436828a584dded3e400b0ae68cfe862c8dd47/exampleSite/content/post/docker-scout/1dockerlogin.png)
 
 Feito login, agora poderemos instalar o **Docker Scout** que está disponível como um script de instalação. Para instalá-lo, execute o seguinte comando:
 
 ```bash
 $ curl -sSfL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh -s --
 ```
-![dockerscoutinstall](dockerscout-install.png)
+![dockerscoutinstall](https://raw.githubusercontent.com/LuksJobs/dev-blog/c02436828a584dded3e400b0ae68cfe862c8dd47/exampleSite/content/post/docker-scout/dockerscout-install.png)
 
 🚀 Obs: caso queira instalar de forma manual, recomendo fortemente seguir as orinetação do [repositório oficial do Docker, no Github](https://github.com/docker/scout-cli)
 
@@ -47,7 +47,7 @@ $ docker scout version
 
 Se tudo tiver ocorriddo bem, você verá o seguint output: 
 
-![dockerversion](dockerscoutwin.png)
+![dockerversion](https://raw.githubusercontent.com/LuksJobs/dev-blog/c02436828a584dded3e400b0ae68cfe862c8dd47/exampleSite/content/post/docker-scout/dockerscoutwin.png)
 
 ### Análise de Imagens Docker
 
@@ -68,13 +68,13 @@ $ git clone https://github.com/LuksJobs/node-busy-box  && cd node-busy-box/
 $ docker build . -t luksjobs/nodejs:dev
 ```
 
-![dockerversion](dockerbuild.png)
+![dockerversion](https://raw.githubusercontent.com/LuksJobs/dev-blog/c02436828a584dded3e400b0ae68cfe862c8dd47/exampleSite/content/post/docker-scout/dockerbuild.png)
 
 ### Agora com nossa imagem pronta, lets go analyze! 
 
 1. Precisamos copiar o nome (repository) e a tag de nossa imagem, no meu caso "`luksjobs/nodejs:dev`":
 
-![dockerimagesls](dockerscout1.gif)
+![dockerimagesls](https://raw.githubusercontent.com/LuksJobs/dev-blog/c02436828a584dded3e400b0ae68cfe862c8dd47/exampleSite/content/post/docker-scout/dockerscout1.gif)
 
 2. Agora que temos as informações sobre a nossa imagem, iremos escaner com a função "quickview" (visão rápida) do Docker Scout:
 
@@ -82,7 +82,7 @@ $ docker build . -t luksjobs/nodejs:dev
 $ docker scout quickview luksjobs/nodejs:dev
 ```
 
-![dockerimagesls](dockerscout2.gif)
+![dockerimagesls](https://raw.githubusercontent.com/LuksJobs/dev-blog/c02436828a584dded3e400b0ae68cfe862c8dd47/exampleSite/content/post/docker-scout/dockerscout2.gif)
 
 Nesse ponto, de primeira analise, o **docker scout** nos trouxe informações de que a nossa imagem possui algumas CVES (vulnerabilidades) e para detalhar o que seria necessário fazer para corrigir essas vulnerabilidades precisamos rodar um outro comando para detalhar mais ainda o que de fato está vulnerável em nossa imagem para que posteriormente, possamos corrigir.
 
@@ -91,7 +91,7 @@ Nesse ponto, de primeira analise, o **docker scout** nos trouxe informações de
 ```bash
 $ docker scout recommendations luksjobs/nodejs:dev
 ```
-![dockerimagesls](dockerscoutrecomend.gif)
+![dockerimagesls](https://raw.githubusercontent.com/LuksJobs/dev-blog/c02436828a584dded3e400b0ae68cfe862c8dd47/exampleSite/content/post/docker-scout/dockerscoutrecomend.gif)
 
 ### Conclusão
 
