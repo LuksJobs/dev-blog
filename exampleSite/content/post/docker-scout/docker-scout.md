@@ -3,7 +3,7 @@ author = "Lucas Oliveira"
 title = "Como remediar problemas de segurança em imagens Docker descobertos pelo Docker Scout "
 date = "2024-01-06"
 description = "Nesse post iremos escanear uma aplicação em Node JS utilizando o Docker Scout pela linha de comando (CLI)"
-image = "https://raw.githubusercontent.com/LuksJobs/dev-blog/c02436828a584dded3e400b0ae68cfe862c8dd47/exampleSite/content/post/docker-scout/docker-scout.jpg"
+image = "https://cdn.dribbble.com/users/1079313/screenshots/2860638/media/5508a9eefd0e31f5db923f4a58b02df0.png"
 tags = [
     "docker", "devops", "docker-scout",
 ]
