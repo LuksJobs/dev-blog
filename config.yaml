@@ -36,11 +36,11 @@ params:
             default: Licensed under CC BY-NC-SA 4.0
 
     comments:
-        enabled: false
+        enabled: true
         provider: disqus
 
         disqusjs:
-            shortname:
+            shortname: https-luks-dev-br
             apiUrl:
             apiKey:
             admin:
