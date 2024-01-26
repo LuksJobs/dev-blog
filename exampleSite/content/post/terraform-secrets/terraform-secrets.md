@@ -3,7 +3,7 @@ author = "Lucas Oliveira"
 title = "Protegendo Segredos no Terraform: Estratégias Eficazes para o Gerenciamento de Informações Confidenciais"
 date = "2024-01-26"
 description = "Uma das perguntas mais comuns que recebo é sobre o uso do Terraform para gerenciamento da infraestrutura de como lidar com segredos, com senha e com outros dados confidenciais."
-image = "terraformsecrets.png"
+image = "https://i.imgur.com/xs0WUZK.png"
 tags = [
     "terraform", "devops",
 ]
@@ -36,7 +36,7 @@ Para mais detalhes, consulte a seção 'Sensitive Values' na seguinte página:
 
 Agora que entendemos os pontos básicos, vamos explicar alguns métodos gerais para lidar com informações confidenciais. Detalhes sobre como utilizá-los serão discutidos na próxima seção.
 
-#### [Método 1](131): Externalização por meio de `Variáveis de Ambiente` ou `Arquivos Externos``
+#### [Método 1](#metodo-1): Externalização por meio de `Variáveis de Ambiente` ou `Arquivos Externos``
 
 O primeiro método envolve o fornecimento de informações confidenciais através dos seguintes meios:
 
@@ -47,7 +47,7 @@ Embora seja fácil de implementar, distribuir variáveis de ambiente ou arquivos
 
 ✘: As informações distribuídas não podem ser recuperadas. Portanto, se uma pessoa com informações confidenciais sair da equipe, pode ser necessário alterar as informações confidenciais (por exemplo, senhas). Além disso, este método escreve informações confidenciais nos arquivos de estado (state files).
 
-#### [Método 2](257): Criptografar Arquivos
+#### [Método 2](#metodo-2): Criptografar Arquivos
 
 O segundo método envolve a *criptografia de arquivos* que contêm informações confidenciais. Apenas os arquivos criptografados são commitados no controle de código-fonte.
 
@@ -81,7 +81,7 @@ Outros fornecedores, como Azure Key Vault e Hashicorp Vault, oferecem funcionali
 
 Lembre-se de que este método também escreve informações confidenciais nos arquivos de estado.
 
-#### [Método 3](199): Armazenamento em Serviços Externos como AWS Secrets Manager
+#### [Método 3](#metodo-3): Armazenamento em Serviços Externos como AWS Secrets Manager
 
 O terceiro método envolve o armazenamento de informações confidenciais em serviços externos, como **AWS Secrets Manager** ou **GCP Secret Manager**, e a leitura dessas informações pelo Terraform ao criar recursos. Alguns serviços específicos incluem:"
 
@@ -109,7 +109,7 @@ Funcionalidade para alterar informações confidenciais periodicamente. Capacida
 
 Além disso, este método também escreve informações confidenciais nos arquivos de estado.
 
-#### [Método 4](207): Não Lidar com Informações Confidenciais no Terraform
+#### [Método 4](#metodo-4): Não Lidar com Informações Confidenciais no Terraform
 
 Você pode pensar: 'Mas este é um artigo de blog com o título 'Lidando com Informações Confidenciais no Terraform', por que estamos falando sobre isso?' Aquilo que estamos apresentando aqui é mais precisamente:
 
@@ -117,7 +117,7 @@ Você pode pensar: 'Mas este é um artigo de blog com o título 'Lidando com Inf
 
 Quando você especifica informações confidenciais, como senhas, ao criar recursos com o Terraform, mesmo que sejam obtidas de fora, seja através de variáveis de ambiente ou do **Secrets Manager**, elas serão gravadas nos arquivos de estado. Embora, em geral, isso não seja um problema se for gerenciado com segurança usando o estado remoto, dependendo dos requisitos de segurança, os métodos de 1 a 3 podem não ser adequados.
 
-[O Método 4](207), basicamente, consiste em:
+[O Método 4](#metodo-4), basicamente, consiste em:
 
 * Armazenar informações confidenciais em serviços como o Secrets Manager.
 * Ao criar recursos com o Terraform, especificar as informações confidenciais de forma adequada.
@@ -128,7 +128,7 @@ Após a criação dos recursos, alterar as informações confidenciais de outra 
 
 A seguir, apresentamos comandos específicos. Os *métodos 1 a 3* são detalhados no blogpost mencionado anteriormente pela [Gruntwork - Using the Library](https://docs.gruntwork.io/library/usage/using-the-library/), então vamos explicar brevemente.
 
-**Detalhes do Método 1**: Externalização por meio de Variáveis de Ambiente ou Arquivos Externos
+**Detalhes do Método 1**: Externalização por meio de Variáveis de Ambiente ou Arquivos Externos {#metodo-1}
 
 Crie um arquivo `variables.tf` da seguinte maneira:"
 
@@ -154,7 +154,7 @@ Em seguida, execute o seguinte comando:
 ```bash
 terraform apply -var-file="variables.tfvars"
 ```
-**Detalhes do Método 2**: Criptografar Arquivos (utilizando KMS):
+**Detalhes do Método 2**: Criptografar Arquivos (utilizando KMS): {#metodo-2}
 
 Neste método, explicarei o uso do KMS, mas a abordagem é semelhante com outros serviços.
 
@@ -196,7 +196,7 @@ aws kms decrypt \
 ```
 Lembrando que a utilização do base64 é crucial.
 
-Detalhes do **Método 3**: Armazenar em AWS Secrets Manager:
+Detalhes do **Método 3**: Armazenar em AWS Secrets Manager: {#metodo-3}
 Registre as informações confidenciais no AWS Secrets Manager em formato YAML ou JSON. Anote o nome do segredo ao registrar.
 
 * Crie o seguinte arquivo no Terraform:
@@ -204,7 +204,7 @@ Registre as informações confidenciais no AWS Secrets Manager em formato YAML o
 <script src="https://gist.github.com/LuksJobs/f307630d840bd9706bc3198270ad4cd7.js"></script>
 
 
-Detalhes do **Método 4**: Não Lidar com Informações Confidenciais no Terraform:
+Detalhes do **Método 4**: Não Lidar com Informações Confidenciais no Terraform: {#metodo-4}
 
 * Veja os detalhes neste post do **Google** [Práticas recomendadas para usar o Terraform](https://cloud.google.com/docs/terraform/best-practices-for-terraform?hl=pt-br) 
 
