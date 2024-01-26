@@ -224,6 +224,12 @@ menu:
           url: https://www.linkedin.com/in/luksjobs/
           params:
               icon: brand-linkedin
+        
+        - identifier: credly
+          name: credly
+          url: https://www.credly.com/users/lucas-oliveira-dantas/badges
+          params:
+              icon: brand-credly
 
 related:
     includeNewer: true
