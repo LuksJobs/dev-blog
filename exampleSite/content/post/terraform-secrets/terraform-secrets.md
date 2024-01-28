@@ -1,6 +1,6 @@
 +++
 author = "Lucas Oliveira"
-title = "Protegendo Segredos no Terraform: Estratégias Eficazes para o Gerenciamento de Informações Confidenciais"
+title = "Protegendo Secrets no Terraform: Estratégias Eficazes para o Gerenciamento de Informações Confidenciais"
 date = "2024-01-28"
 description = "Uma das perguntas mais comuns que recebo é sobre o uso do Terraform para gerenciamento da infraestrutura de como lidar com segredos, com senha e com outros dados confidenciais."
 image = "https://i.imgur.com/xs0WUZK.png"
@@ -156,7 +156,7 @@ terraform apply -var-file="variables.tfvars"
 ```
 **Detalhes do Método 2**: Criptografar Arquivos (utilizando KMS): {#metodo-2}
 
-Neste método, explicarei o uso do KMS, mas a abordagem é semelhante com outros serviços.
+Neste método, explicarei o uso do KMS, mas a abordagem é semelhante com outros serviços.s
 
 * Crie um arquivo `secrets.yaml` em texto simples e adicione ao `.gitignore`.
 
