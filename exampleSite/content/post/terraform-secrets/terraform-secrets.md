@@ -1,7 +1,7 @@
 +++
 author = "Lucas Oliveira"
 title = "Protegendo Segredos no Terraform: Estratégias Eficazes para o Gerenciamento de Informações Confidenciais"
-date = "2024-01-26"
+date = "2024-01-28"
 description = "Uma das perguntas mais comuns que recebo é sobre o uso do Terraform para gerenciamento da infraestrutura de como lidar com segredos, com senha e com outros dados confidenciais."
 image = "https://i.imgur.com/xs0WUZK.png"
 tags = [
