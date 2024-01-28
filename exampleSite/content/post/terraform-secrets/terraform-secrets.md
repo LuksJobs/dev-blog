@@ -90,6 +90,8 @@ O terceiro método envolve o armazenamento de informações confidenciais em ser
 * GCP Secrets Manager
 * HashiCorp Vault
 
+Em outro post, falei um pouco sobre o Vault: ["Utilizando o Vault para Gerenciar Segredos em Aplicações NodeJS"](https://luks.dev.br/p/utilizando-o-vault-para-gerenciar-segredos-em-aplica%C3%A7%C3%B5es-nodejs/)
+
 No momento, com base na visualização da seguinte página, parece que o Azure não possui um serviço similar.
 
 Além disso, a existência de dois serviços semelhantes na AWS é uma característica comum da AWS. Sobre as diferenças e o uso desses dois serviços, uma busca fornecerá uma variedade de informações.
