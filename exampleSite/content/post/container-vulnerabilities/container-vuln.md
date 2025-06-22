@@ -3,7 +3,7 @@ author = "Lucas Oliveira"
 title = "Introdução ao Scan de Vulnerabilidades em Containers Docker utilizando o SAST"
 date = "2025-06-22"
 description = "Nesse post irei mostrar como usar testes estáticos para analisar imagens de containers antes da execução, identificando vulnerabilidades em código e configuração — como bibliotecas desatualizadas, permissões perigosas ou segredos embutidos — e integrando essa análise no fluxo de desenvolvimento para garantir que apenas imagens seguras cheguem em produção"
-image = "https://i.imgur.com/ybI3hUl.jpeg"
+image = "https://i.imgur.com/bwPctrO.jpeg"
 tags = [
     "docker", "sast", "vulnerabilidades", "devops",
 ]
@@ -43,6 +43,12 @@ Basicamente você deve seguir os seguintes princípios:
 Entender quais vulnerabilidades estão em um contêiner é importante para entender e abordar sua importância. Portanto, aqui estou listando os problemas de vulnerabilidade descobertos anteriormente.
 
 #### **Ataque afogado**
+
+DROWN mostra que apenas suportar SSLv2 é uma ameaça para servidores e clientes modernos. Permite que um atacante descriptografe conexões TLS modernas entre clientes e servidores atualizados enviando sondas para um servidor que suporta SSLv2 e usa o mesma chave privada.
+
+<p align="center">
+  <img src="https://drownattack.com/media/img/DROWN_diagram1.jpg" alt="Drown Attack" width="500"/>
+</p>
 
 Explorar uma vulnerabilidade chamada "**DROWN Attack**" permite que os invasores descriptografem o TLS e leiam e roubem comunicações confidenciais, como senhas, números de cartão de crédito, segredos comerciais e dados financeiros, publicados em março de 2016. Em uma medição, 33% de todos os servidores HTTPS estavam vulneráveis a ataques. Após isso, procedeu-se à aplicação do programa de correção e, a partir de 2019 Laboratórios SSL Estima-se que seja vulnerável a 1,2% dos servidores HTTPS.
 
