@@ -1,9 +1,8 @@
-
 +++
 author = "Lucas Oliveira"
 title = "Por que .env no Git é um erro fatal – Mesmo em projetos privados"
 date = "2025-06-24"
-description = "Mesmo em repositórios privados, **não** "commita" arquivos `.env` no repositório Git! Existe métodos e técnicas seguras de gestão de variáveis de ambiente para evitar incidentes de segurança expostos (hardcoded) em arquivos ".env"."
+description = "Mesmo em repositórios privados, não commita arquivos .env no repositório Git! Existe métodos e técnicas seguras de gestão de variáveis de ambiente para evitar incidentes de segurança expostos (hardcoded) em arquivos .env"
 image = "https://i.imgur.com/8yrUcKa.jpeg"
 tags = [
     "security", "sast", "vulnerabilidades", "devsecops",
@@ -24,8 +23,6 @@ Nesse post, você vai aprender a:
 - Usar `dotenv-cli` para alternar ambientes com segurança  
 - Implementar verificações automáticas com `git-secrets` e hooks no `pre-commit`  
 - Utilizar serviços robustos como `AWS Secrets Manager` e `Doppler`
-
----
 
 ## 1. O mito: "Privado = seguro"
 
