@@ -108,7 +108,7 @@ Exemplo utilizando o **Gitlab**:
 No **GitLab**, defina as varáveis que seriam utilizadas em seu .env e outros segredos em **Settings > CI/CD > Variables**:
 
 <p align="center">
-  <img src="https://i.imgur.com/ZGv02RK.png" alt="Gitlab Variables" width="500"/>
+  <img src="https://i.imgur.com/TVOxM7u.png" alt="Github Variables" width="600"/>
 </p>
 
 Exemplo utilizando o **Github**:
@@ -116,7 +116,7 @@ Exemplo utilizando o **Github**:
 No **Github**, adicione os secrets do seu .env em **"Settings > Secrets and variables > Actions > Variables"**:
 
 <p align="center">
-  <img src="https://i.imgur.com/Mtpv0EI.png" alt="Github Variables" width="500"/>
+  <img src="https://i.imgur.com/Mtpv0EI.png" alt="Github Variables" width="600"/>
 </p>
 
 ## 5. Alternância segura entre ambientes (execução local)
