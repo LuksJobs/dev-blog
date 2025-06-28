@@ -119,7 +119,9 @@ No **Github**, adicione os secrets do seu .env em **"Settings > Secrets and vari
   <img src="https://i.imgur.com/Mtpv0EI.png" alt="Github Variables" width="600"/>
 </p>
 
-## 5. Alternância segura entre ambientes (execução local)
+## 5. Alternância segura entre ambientes
+
+Gerenciar múltiplos ambientes de forma segura e organizada é essencial em qualquer projeto moderno — especialmente ao lidar com variáveis sensíveis como chaves de API, conexões com banco de dados e tokens de serviços externos.
 
 ```bash
 npm install --save-dev dotenv-cli
@@ -134,7 +136,7 @@ E no `package.json`:
 }
 ```
 
-## 6. Validação de variáveis (execução local)
+## 6. Validação de variáveis
 
 ```js
 require('dotenv').config();
@@ -146,6 +148,8 @@ if (missing.length) {
 }
 ```
 
+Esse pequeno trecho de código é um exemplo de como boas práticas simples podem evitar dores de cabeça lá na frente. Verificar variáveis de ambiente logo na inicialização da sua aplicação é uma forma eficaz de manter seu ambiente mais seguro, estável e previsível — especialmente em cenários com múltiplos ambientes ou equipes.
+
 ## 7. Plataformas cloud com gestão segura
 
 ### Vercel
@@ -154,6 +158,7 @@ if (missing.length) {
 vercel env add DATABASE_URL production
 vercel env pull .env.local
 ```
+O **Vercel** oferece uma CLI poderosa que permite controlar essas variáveis de forma segura e integrada com seus ambientes (development, preview e production).
 
 ### Next.js
 
@@ -202,9 +207,9 @@ Exemplo `.pre-commit-config.yaml` para prevenir commits de `.env` e outros erros
 
 ## 11. O que fazer se "commitou" o `.env`
 
-### 1. Revogue credenciais imediatamente
+#### 1. Revogue credenciais imediatamente
 
-### 2. Apague o histórico Git completamente:
+#### 2. Apague o histórico Git completamente:
 
 ```bash
 git filter-branch --force --index-filter   'git rm --cached --ignore-unmatch .env'   --prune-empty --tag-name-filter cat -- --all
