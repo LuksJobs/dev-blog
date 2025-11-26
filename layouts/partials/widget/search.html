@@ -11,6 +11,20 @@
             </button>
         </p>
     </form>
+    
+    <!-- Twitter Timeline Widget -->
+    <div class="twitter-widget widget" style="margin-top: 1.5rem;">
+        <a class="twitter-timeline" 
+           href="https://twitter.com/luksjobs?ref_src=twsrc%5Etfw"
+           data-width="100%"
+           data-height="400"
+           data-theme="light"
+           data-tweet-limit="3"
+           data-chrome="noheader nofooter noborders transparent">
+           Tweets by luksjobs
+        </a>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </div>
 {{- else -}}
     {{- warnf "Search page not found. Create a page with layout: search." -}}
 {{- end -}}
