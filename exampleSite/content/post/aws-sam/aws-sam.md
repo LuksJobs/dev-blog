@@ -2,7 +2,7 @@
 author = "Lucas Oliveira"
 title = "Noções básicas e práticas do AWS SAM para agilizar o desenvolvimento serveless"
 date = "2025-11-26"
-image = "https://i.imgur.com/Grnhtf6.jpeg"
+image = "https://i.imgur.com/tUMqz5m.jpeg"
 description = "AWS Sam é uma estrutura fornecida pela AWS para gerenciar centralmente recursos serverless, como funções Lambda, Amazon API Gateway, Amazon DynamoDB e Amazon S3."
 categories = [
     "aws",
