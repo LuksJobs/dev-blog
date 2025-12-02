@@ -245,102 +245,15 @@ Desta vez, usaremos o modelo criado por padrão. Essa é a estutura de arquivos 
 
 Agora, vamos editar o arquivo gerado: "`template.yaml`"
 
-```yaml
-AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
-Description: >
-  hello-sam
+<script src="https://gist.github.com/LuksJobs/d69265f36b90c8e443e7d7b05d6a9d2d.js"></script>
 
-  Sample SAM Template for hello-sam
-
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
-Globals:
-  Function:
-    Timeout: 3
-
-    Tracing: Active
-  Api:
-    TracingEnabled: true
-Resources:
-  HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: hello_world/
-      Handler: app.lambda_handler
-      Runtime: python3.12
-      Architectures:
-      - x86_64
-      Events:
-        HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /hello
-            Method: get
-
-Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
-    Description: API Gateway endpoint URL for Prod stage for Hello World 
-      function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/hello/"
-  HelloWorldFunction:
-    Description: Hello World Lambda Function ARN
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: Implicit IAM Role created for Hello World function
-    Value: !GetAtt HelloWorldFunctionRole.Arn
-```
 ### 3. **Edição de código** (/hello-world/app.py)
 
 Repare que dentro do diretório: "**hello_world**", foi gerado um arquivo python: "**app.py**". Pois é, esse é nosso arquivo de código "hello world", "serveless" em python 😎 
 
 Agora vamos editar esse arquivo ``app.py``. Exemplo:
 
-```python
-import json
-
-# import requests
-
-def lambda_handler(event, context):
-    """Sample pure Lambda function
-
-    Parameters
-    ----------
-    event: dict, required
-        API Gateway Lambda Proxy Input Format
-
-        Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
-
-    context: object, required
-        Lambda Context runtime methods and attributes
-
-        Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
-
-    Returns
-    ------
-    API Gateway Lambda Proxy Output Format: dict
-
-        Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
-    """
-
-    # try:
-    #     ip = requests.get("http://checkip.amazonaws.com/")
-    # except requests.RequestException as e:
-    #     # Send some context about this error to Lambda Logs
-    #     print(e)
-
-    #     raise e
-
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "hello world",
-            # "location": ip.text.replace("\n", "")
-        }),
-    }
-```
+<script src="https://gist.github.com/LuksJobs/b1a5a51b5a8198a91e56cce61fa57b2d.js"></script>
 
 Aqui vou tentar explicar um pouco do que se trata nosso arquivo de código: "`app.py` gerado pelo nosso querido SAM-CLI:
 
