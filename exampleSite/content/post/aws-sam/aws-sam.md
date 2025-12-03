@@ -25,7 +25,7 @@ Neste post, irei apresentar os conceitos básicos de SAM (**Serverless Applicati
 Espero que o conteúdo deste blog ajude os leitores a entender um pouco mais sobre SAM 😊
 
 ## Introdução ao AWS SAM ｜ Noções básicas sobre como criar aplicações Serverless
-<img src="https://media.amazonwebservices.com/blog/2018/sam_squirrel_1.jpg" alt="AWS SAM — mascote (Squirrel)" style="float: right; margin: 0 0 15px 15px; max-width: 200px;" />
+<img src="https://i1.wp.com/www.awsadvent.com/wp-content/uploads/2018/12/SAM.png?resize=301%2C397&ssl=1" alt="AWS SAM — mascote (Squirrel)" style="float: right; margin: 0 0 15px 15px; max-width: 200px;" />
 
 AWS SAM [(**Serverless Application Model**)](https://docs.aws.amazonwebservices.com/serverless-application-model/latest/developerguide/serverless-getting-started.html) é uma estrutura fornecida pela AWS para gerenciar centralmente recursos serverless, como funções **Lambda**, Amazon **API Gateway**, Amazon **DynamoDB** e Amazon **S3**. Estende o **AWS CloudFormation** para fornecer uma sintaxe exclusiva que permite declarar concisamente recursos serverless, como funções Lambda e tabelas API Gateway e DynamoDB. 
 
