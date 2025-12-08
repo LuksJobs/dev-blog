@@ -21,13 +21,13 @@ Olá, pessoal! Quanto tempo hein!? Pois é, o tempo tem sido curto para mim ulti
 
 Pensando bem, eu nunca abordei esse assunto no meu blog, então escrevi este post como uma resenha.
 
-Neste post, irei apresentar os conceitos básicos de SAM (**Serverless Application Model**), construção de manifestos, métodos de teste locais e melhores práticas operacionais para que até mesmo usuários iniciantes possam usá-lo com confiança.
+Neste post, irei apresentar os conceitos básicos de SAM (**Serverless Application Model**), realizando a construção de manifestos, métodos de teste locais e melhores práticas operacionais para que até mesmo usuários iniciantes possam usá-lo com confiança.
 Espero que o conteúdo deste blog ajude os leitores a entender um pouco mais sobre SAM 😊
 
 ## Introdução ao AWS SAM ｜ Noções básicas sobre como criar aplicações Serverless
 <img src="https://i1.wp.com/www.awsadvent.com/wp-content/uploads/2018/12/SAM.png?resize=301%2C397&ssl=1" alt="AWS SAM — mascote (Squirrel)" style="float: right; margin: 0 0 15px 15px; max-width: 200px;" />
 
-AWS SAM [(**Serverless Application Model**)](https://docs.aws.amazonwebservices.com/serverless-application-model/latest/developerguide/serverless-getting-started.html) é uma estrutura fornecida pela AWS para gerenciar centralmente recursos serverless, como funções **Lambda**, Amazon **API Gateway**, Amazon **DynamoDB** e Amazon **S3**. Estende o **AWS CloudFormation** para fornecer uma sintaxe exclusiva que permite declarar concisamente recursos serverless, como funções Lambda e tabelas API Gateway e DynamoDB. 
+AWS SAM [(**Serverless Application Model**)](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started.html) é uma CLI com estrutura fornecida pela AWS para gerenciar centralmente recursos serverless, como funções **Lambda**, Amazon **API Gateway**, Amazon **DynamoDB** e Amazon **S3**. Estende o **AWS CloudFormation** para fornecer uma sintaxe exclusiva que permite declarar concisamente recursos serverless, como funções Lambda e tabelas API Gateway e DynamoDB. 
 
 Você pode definir um aplicativo inteiro com um modelo SAM (no formato **YAML**) e automatizar a compilação e a implantação com os comandos `sam build` e `sam deploy`. Isso evita o incômodo de escrever à mão modelos complexos do **CloudFormation** e aumenta drasticamente a produtividade do desenvolvimento serverless.
 
