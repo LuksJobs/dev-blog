@@ -1,1 +1,79 @@
 /* Place your custom SCSS in HUGO_SITE_FOLDER/assets/scss/custom.scss */
+
+// Repost/Share button (Tumblr-like) in article details
+.article-details {
+  .article-time {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+
+    // Keep date/reading blocks consistent
+    > div {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+  }
+}
+
+.article-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border-color);
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  cursor: pointer;
+  line-height: 1;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  .article-share__count {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.75;
+  }
+
+  &.is-status {
+    border-color: var(--accent-color);
+  }
+}
+
+// Responsive: on small screens keep it compact
+@media (max-width: 480px) {
+  .article-details {
+    .article-time {
+      justify-content: flex-start;
+    }
+  }
+
+  .article-share {
+    padding: 6px 8px;
+
+    [data-share-label] {
+      display: none;
+    }
+
+    .article-share__count {
+      margin-left: 2px;
+    }
+  }
+}

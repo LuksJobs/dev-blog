@@ -12,6 +12,7 @@ import createElement from 'ts/createElement';
 import StackColorScheme from 'ts/colorScheme';
 import { setupScrollspy } from 'ts/scrollspy';
 import { setupSmoothAnchors } from "ts/smoothAnchors";
+import setupShare from 'ts/share';
 
 let Stack = {
     init: () => {
@@ -19,6 +20,9 @@ let Stack = {
          * Bind menu event
          */
         menu();
+
+        // Share/Repost button (Web Share API with clipboard fallback)
+        setupShare();
 
         const articleContent = document.querySelector('.article-content') as HTMLElement;
         if (articleContent) {
