@@ -34,15 +34,10 @@
 {{- else -}}
     {{- /*
         Compatibility note:
-        - Netlify is pinned to Hugo 0.117 in netlify.toml.
-        - Older Hugo may not expose .Site.LastChange / .Site.Lastmod on page.Site.
-        Use .Site.BuildDate as a safe fallback.
+        - Old Hugo versions (e.g. 0.117 on Netlify) do not expose .Site.LastChange/.Site.Lastmod/.Site.BuildDate on page.Site.
+        Use current build time as a safe fallback.
     */ -}}
-    {{- with .Site.BuildDate -}}
-        {{- if not .IsZero -}}
-            <meta property='og:updated_time' content='{{ .Format "2006-01-02T15:04:05-07:00" | safeHTML }}'/>
-        {{- end -}}
-    {{- end -}}
+    <meta property='og:updated_time' content='{{ now.Format "2006-01-02T15:04:05-07:00" | safeHTML }}'/>
 {{- end -}}
 
 {{ $image := partialCached "helper/image" (dict "Context" . "Type" "opengraph") .RelPermalink "opengraph" }}
