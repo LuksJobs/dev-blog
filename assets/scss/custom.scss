@@ -147,85 +147,63 @@
   }
 }
 
-/* Modern code block/snippet styling (box + language label) */
+/* Code block palette: neutral/darker (avoid blue cast) with good contrast */
 :root {
-  --codeblock-bg: #0b1020;
-  --codeblock-fg: rgba(255, 255, 255, 0.9);
+  --codeblock-bg: #0f1115;
+  --codeblock-fg: rgba(255, 255, 255, 0.92);
   --codeblock-border: rgba(255, 255, 255, 0.10);
   --codeblock-header-bg: rgba(255, 255, 255, 0.06);
+  --codeblock-scrollbar-thumb: rgba(255, 255, 255, 0.18);
+  --codeblock-scrollbar-track: rgba(255, 255, 255, 0.06);
 
   &[data-scheme="dark"] {
-    --codeblock-bg: #0b1020;
+    --codeblock-bg: #0f1115;
     --codeblock-fg: rgba(255, 255, 255, 0.92);
     --codeblock-border: rgba(255, 255, 255, 0.12);
     --codeblock-header-bg: rgba(255, 255, 255, 0.06);
+    --codeblock-scrollbar-thumb: rgba(255, 255, 255, 0.18);
+    --codeblock-scrollbar-track: rgba(255, 255, 255, 0.06);
+  }
+
+  /* Light scheme: keep it neutral and readable */
+  &:not([data-scheme="dark"]) {
+    --codeblock-bg: #111318;
+    --codeblock-fg: rgba(255, 255, 255, 0.92);
+    --codeblock-border: rgba(255, 255, 255, 0.10);
+    --codeblock-header-bg: rgba(255, 255, 255, 0.06);
+    --codeblock-scrollbar-thumb: rgba(255, 255, 255, 0.18);
+    --codeblock-scrollbar-track: rgba(255, 255, 255, 0.06);
   }
 }
 
 .article-content {
+  /* Apply palette to both raw pre and Hugo highlight wrapper */
   .highlight,
   pre {
-    border-radius: 12px;
-    border: 1px solid var(--codeblock-border);
-    background: var(--codeblock-bg);
+    background: var(--codeblock-bg) !important;
     color: var(--codeblock-fg);
+    border-color: var(--codeblock-border) !important;
   }
 
-  /* Header bar for code blocks that have a data-lang attribute on code */
-  .highlight {
-    padding-top: calc(var(--card-padding) + 30px);
-
-    &::before {
-      content: attr(data-lang);
-      position: absolute;
-      left: 12px;
-      top: 10px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: var(--codeblock-header-bg);
-      border: 1px solid var(--codeblock-border);
-      color: rgba(255, 255, 255, 0.85);
-      font-family: var(--code-font-family);
-      font-size: 12px;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
+  /* Improve readability */
+  pre {
+    font-size: 0.95em;
+    line-height: 1.55;
   }
 
-  /* Line numbers */
-  .chroma .lnt,
-  .chroma .ln {
-    color: rgba(255, 255, 255, 0.45);
+  /* Language badge */
+  .highlight::before {
+    background: var(--codeblock-header-bg);
+    border-color: var(--codeblock-border);
+    color: rgba(255, 255, 255, 0.85);
   }
 
-  /* Horizontal scrollbar (WebKit) */
-  pre::-webkit-scrollbar {
-    height: 10px;
-  }
+  /* Scrollbar */
   pre::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.16);
-    border-radius: 8px;
+    background: var(--codeblock-scrollbar-thumb);
   }
   pre::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.06);
-  }
-
-  /* Copy button: more modern */
-  .copyCodeButton {
-    opacity: 1;
-    top: 10px;
-    right: 10px;
-    border: 1px solid var(--codeblock-border);
-    background: rgba(0, 0, 0, 0.25);
-    color: rgba(255, 255, 255, 0.9);
-    box-shadow: none;
-    padding: 6px 10px;
-    border-radius: 10px;
-    backdrop-filter: blur(6px);
-  }
-
-  .highlight:hover .copyCodeButton {
-    opacity: 1;
+    background: var(--codeblock-scrollbar-track);
   }
 }
 
