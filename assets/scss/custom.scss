@@ -339,3 +339,88 @@
     border-right: 1px solid color-mix(in srgb, var(--gist-border) 70%, transparent) !important;
   }
 }
+
+/* GitHub Docs-like fenced code blocks */
+:root {
+  --gh-code-bg: #f6f8fa;
+  --gh-code-fg: #24292f;
+  --gh-code-border: rgba(27, 31, 36, 0.15);
+  --gh-code-muted: #57606a;
+
+  &[data-scheme="dark"] {
+    --gh-code-bg: #161b22;
+    --gh-code-fg: #e6edf3;
+    --gh-code-border: rgba(240, 246, 252, 0.15);
+    --gh-code-muted: rgba(230, 237, 243, 0.6);
+  }
+}
+
+.article-content {
+  /* wrapper + raw pre */
+  .highlight,
+  pre {
+    background: var(--gh-code-bg) !important;
+    border: 1px solid var(--gh-code-border) !important;
+    border-radius: 6px;
+    color: var(--gh-code-fg);
+  }
+
+  pre {
+    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  /* remove any full-bleed behavior */
+  .highlight,
+  pre {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: auto !important;
+  }
+
+  /* Language label: subtle like GitHub (only when data-lang exists) */
+  .highlight[data-lang]::before {
+    content: attr(data-lang);
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    color: var(--gh-code-muted);
+    border: 1px solid var(--gh-code-border);
+    background: color-mix(in srgb, var(--gh-code-bg) 92%, #fff);
+    font-family: var(--base-font-family);
+    font-size: 12px;
+  }
+
+  /* Ensure room for the label */
+  .highlight[data-lang] {
+    padding-top: calc(var(--card-padding) + 26px);
+  }
+
+  /* Line numbers: no dashed artifacts, subtle separator */
+  .chroma .lntable,
+  .chroma .lntd,
+  .chroma .lnt,
+  .chroma .ln {
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+  }
+  .chroma .lntd:first-child {
+    box-shadow: inset -1px 0 0 var(--gh-code-border);
+  }
+  .chroma .ln,
+  .chroma .lnt {
+    color: color-mix(in srgb, var(--gh-code-fg) 35%, transparent);
+  }
+
+  /* Copy button */
+  .copyCodeButton {
+    border: 1px solid var(--gh-code-border);
+    background: color-mix(in srgb, var(--gh-code-bg) 92%, #fff);
+    color: var(--gh-code-muted);
+    border-radius: 6px;
+  }
+}
