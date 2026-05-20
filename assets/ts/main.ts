@@ -73,9 +73,41 @@ let Stack = {
         highlights.forEach(highlight => {
             const codeBlock = highlight.querySelector('code[data-lang]') as HTMLElement;
             if (codeBlock) {
-                const lang = codeBlock.getAttribute('data-lang');
-                if (lang && !highlight.getAttribute('data-lang')) {
-                    highlight.setAttribute('data-lang', lang);
+                const rawLang = (codeBlock.getAttribute('data-lang') || '').toLowerCase();
+                const langMap: Record<string, string> = {
+                    js: 'JavaScript',
+                    javascript: 'JavaScript',
+                    ts: 'TypeScript',
+                    typescript: 'TypeScript',
+                    jsx: 'JSX',
+                    tsx: 'TSX',
+                    py: 'Python',
+                    python: 'Python',
+                    go: 'Go',
+                    golang: 'Go',
+                    sh: 'Shell',
+                    bash: 'Bash',
+                    zsh: 'Zsh',
+                    powershell: 'PowerShell',
+                    ps1: 'PowerShell',
+                    html: 'HTML',
+                    css: 'CSS',
+                    scss: 'SCSS',
+                    sass: 'Sass',
+                    json: 'JSON',
+                    yaml: 'YAML',
+                    yml: 'YAML',
+                    toml: 'TOML',
+                    md: 'Markdown',
+                    markdown: 'Markdown',
+                    dockerfile: 'Dockerfile',
+                    sql: 'SQL',
+                    xml: 'XML'
+                };
+
+                const label = langMap[rawLang] || (rawLang ? rawLang.toUpperCase() : '');
+                if (label && !highlight.getAttribute('data-lang')) {
+                    highlight.setAttribute('data-lang', label);
                 }
             }
 
