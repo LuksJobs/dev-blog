@@ -323,4 +323,19 @@
   .copyCodeButton:hover {
     background: color-mix(in srgb, var(--gist-bg) 92%, #fff);
   }
+
+  /* Fix: remove odd dashed-looking inner borders from Chroma line-table layout */
+  .chroma .lntable,
+  .chroma .lntd,
+  .chroma .lnt,
+  .chroma .ln {
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+  }
+
+  /* Gist has a subtle solid separator between line numbers and code */
+  .chroma .lntd:first-child {
+    border-right: 1px solid color-mix(in srgb, var(--gist-border) 70%, transparent) !important;
+  }
 }
