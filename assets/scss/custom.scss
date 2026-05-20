@@ -228,3 +228,49 @@
     opacity: 1;
   }
 }
+
+/* Post typography improvements */
+:root {
+  --reading-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  --reading-font-size: 1.7rem;
+}
+
+.article-content {
+  font-family: var(--reading-font);
+  font-size: var(--reading-font-size);
+  line-height: 1.85;
+  letter-spacing: -0.005em;
+
+  p {
+    margin: 0 0 1.1em 0;
+  }
+
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Code blocks: make them 'floated' and not full-bleed */
+.article-content {
+  .highlight,
+  pre {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: auto !important;
+
+    border-radius: 12px;
+  }
+
+  /* Keep inline code readable with the new font */
+  code:not([data-lang]) {
+    font-family: var(--code-font-family);
+    font-size: 0.95em;
+  }
+
+  /* A bit of breathing room so it looks like a modern “box” */
+  .highlight,
+  pre {
+    margin-top: 1.2em;
+    margin-bottom: 1.2em;
+  }
+}
