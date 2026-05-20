@@ -1,7 +1,7 @@
 baseurl: https://example.com
 languageCode: en-us
 theme: hugo-theme-stack
-paginate: 5
+paginate: 8
 title: Lucas Oliveira
 copyright: Lucas Oliveira Dantas
 

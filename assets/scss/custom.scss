@@ -77,3 +77,72 @@
     }
   }
 }
+
+/* Dev.to-like layout tweaks (subtle, theme-compatible)
+   Goal: flatter cards, clearer borders, slightly tighter list spacing.
+*/
+:root {
+  --devto-border: rgba(0, 0, 0, 0.08);
+
+  &[data-scheme="dark"] {
+    --devto-border: rgba(255, 255, 255, 0.10);
+  }
+}
+
+.article-list {
+  gap: 16px; // dev.to-like tighter vertical rhythm
+
+  article {
+    box-shadow: none;
+    border: 1px solid var(--devto-border);
+
+    &:hover {
+      box-shadow: none;
+      border-color: rgba(var(--link-background-color), 0.45);
+    }
+
+    .article-details {
+      gap: 12px;
+    }
+  }
+}
+
+.article-title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.article-subtitle {
+  font-size: 1.6rem;
+  line-height: 1.6;
+}
+
+.article-category a {
+  border-radius: 999px;
+  padding: 6px 12px;
+}
+
+.article-time {
+  gap: 10px;
+
+  time,
+  a {
+    font-size: 1.3rem;
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Make the list feel more like dev.to on larger viewports */
+@media (min-width: 768px) {
+  .main-container {
+    max-width: 1100px;
+  }
+
+  .article-list article {
+    border-radius: 12px;
+  }
+}
