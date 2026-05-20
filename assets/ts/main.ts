@@ -71,16 +71,23 @@ let Stack = {
             copiedText = `Copied!`;
 
         highlights.forEach(highlight => {
+            const codeBlock = highlight.querySelector('code[data-lang]') as HTMLElement;
+            if (codeBlock) {
+                const lang = codeBlock.getAttribute('data-lang');
+                if (lang && !highlight.getAttribute('data-lang')) {
+                    highlight.setAttribute('data-lang', lang);
+                }
+            }
+
             const copyButton = document.createElement('button');
             copyButton.innerHTML = copyText;
             copyButton.classList.add('copyCodeButton');
             highlight.appendChild(copyButton);
 
-            const codeBlock = highlight.querySelector('code[data-lang]');
             if (!codeBlock) return;
 
             copyButton.addEventListener('click', () => {
-                navigator.clipboard.writeText(codeBlock.textContent)
+                navigator.clipboard.writeText(codeBlock.textContent || '')
                     .then(() => {
                         copyButton.textContent = copiedText;
 
