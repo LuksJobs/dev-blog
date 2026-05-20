@@ -424,3 +424,46 @@
     border-radius: 6px;
   }
 }
+
+.article-content {
+  /* GitHub-like padding/overflow */
+  .highlight,
+  pre {
+    padding: 16px !important;
+    overflow: auto;
+  }
+
+  /* When we have a language label, make room for it */
+  .highlight[data-lang] {
+    padding-top: 44px !important;
+  }
+
+  .highlight[data-lang]::before {
+    top: 12px;
+    left: 12px;
+  }
+
+  /* Inline code like GitHub */
+  :not(pre) > code {
+    padding: 0.15em 0.35em;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--gh-code-bg) 70%, #fff);
+    border: 1px solid color-mix(in srgb, var(--gh-code-border) 70%, transparent);
+    font-size: 0.95em;
+  }
+
+  /* Scrollbar (WebKit) */
+  pre::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+  }
+
+  pre::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--gh-code-border) 55%, transparent);
+    border-radius: 999px;
+  }
+
+  pre::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
