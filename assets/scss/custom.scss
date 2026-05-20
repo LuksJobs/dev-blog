@@ -252,3 +252,75 @@
     margin-bottom: 1.2em;
   }
 }
+
+/* GitHub Gist-like code blocks */
+:root {
+  --gist-bg: #f6f8fa;
+  --gist-border: #d0d7de;
+  --gist-fg: #24292f;
+  --gist-header-bg: #f6f8fa;
+  --gist-header-fg: #57606a;
+
+  &[data-scheme="dark"] {
+    --gist-bg: #0d1117;
+    --gist-border: #30363d;
+    --gist-fg: #c9d1d9;
+    --gist-header-bg: #0d1117;
+    --gist-header-fg: #8b949e;
+  }
+}
+
+.article-content {
+  .highlight,
+  pre {
+    background: var(--gist-bg) !important;
+    border: 1px solid var(--gist-border) !important;
+    color: var(--gist-fg);
+    border-radius: 10px;
+  }
+
+  pre {
+    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  /* Header bar */
+  .highlight {
+    padding-top: calc(var(--card-padding) + 28px);
+
+    &::before {
+      content: attr(data-lang);
+      position: absolute;
+      left: 12px;
+      top: 10px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--gist-header-bg);
+      border: 1px solid var(--gist-border);
+      color: var(--gist-header-fg);
+      font-family: var(--base-font-family);
+      font-size: 12px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+  }
+
+  /* Line numbers */
+  .chroma .lnt,
+  .chroma .ln {
+    color: color-mix(in srgb, var(--gist-fg) 35%, transparent);
+  }
+
+  /* Copy button: gist-like */
+  .copyCodeButton {
+    border: 1px solid var(--gist-border);
+    background: var(--gist-bg);
+    color: var(--gist-header-fg);
+    box-shadow: none;
+  }
+
+  .copyCodeButton:hover {
+    background: color-mix(in srgb, var(--gist-bg) 92%, #fff);
+  }
+}
