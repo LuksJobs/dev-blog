@@ -72,6 +72,8 @@ let Stack = {
 
         highlights.forEach(highlight => {
             const codeBlock = highlight.querySelector('code[data-lang]') as HTMLElement;
+            let label = '';
+
             if (codeBlock) {
                 const rawLang = (codeBlock.getAttribute('data-lang') || '').toLowerCase();
                 const langMap: Record<string, string> = {
@@ -105,12 +107,55 @@ let Stack = {
                     xml: 'XML'
                 };
 
-                const label = langMap[rawLang] || (rawLang ? rawLang.toUpperCase() : '');
+                label = langMap[rawLang] || (rawLang ? rawLang.toUpperCase() : '');
                 if (label && !highlight.getAttribute('data-lang')) {
                     highlight.setAttribute('data-lang', label);
                 }
             }
 
+            // Build header bar (language + copy)
+            if (!highlight.querySelector('.codeblock-header')) {
+                const header = document.createElement('div');
+                header.className = 'codeblock-header';
+
+                const langEl = document.createElement('span');
+                langEl.className = 'codeblock-lang';
+                langEl.textContent = label || 'Code';
+
+                const copyButton = document.createElement('button');
+                copyButton.type = 'button';
+                copyButton.classList.add('copyCodeButton');
+                copyButton.textContent = copyText;
+
+                header.appendChild(langEl);
+                header.appendChild(copyButton);
+                highlight.insertBefore(header, highlight.firstChild);
+
+                if (codeBlock) {
+                    copyButton.addEventListener('click', () => {
+                        navigator.clipboard.writeText(codeBlock.textContent || '')
+                            .then(() => {
+                                copyButton.textContent = copiedText;
+                                setTimeout(() => {
+                                    copyButton.textContent = copyText;
+                                }, 1000);
+                            })
+                            .catch(err => {
+                                alert(err)
+                                console.log('Something went wrong', err);
+                            });
+                    });
+                }
+
+                // Fallback: if no code block detected, disable copy
+                if (!codeBlock) {
+                    copyButton.setAttribute('disabled', 'true');
+                }
+
+                return;
+            }
+
+            // Legacy fallback (should not run when header exists)
             const copyButton = document.createElement('button');
             copyButton.innerHTML = copyText;
             copyButton.classList.add('copyCodeButton');

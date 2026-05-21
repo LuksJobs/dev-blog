@@ -467,3 +467,100 @@
     background: transparent;
   }
 }
+
+/* Final code block layout: compact header + line numbers always on */
+:root {
+  --cb-bg: #f6f8fa;
+  --cb-fg: #24292f;
+  --cb-border: rgba(27, 31, 36, 0.15);
+  --cb-muted: #57606a;
+  --cb-header-bg: #fff;
+
+  &[data-scheme="dark"] {
+    --cb-bg: #0d1117;
+    --cb-fg: #e6edf3;
+    --cb-border: rgba(240, 246, 252, 0.15);
+    --cb-muted: rgba(230, 237, 243, 0.65);
+    --cb-header-bg: #161b22;
+  }
+}
+
+.article-content {
+  .highlight {
+    position: relative;
+    background: var(--cb-bg) !important;
+    border: 1px solid var(--cb-border) !important;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: auto !important;
+  }
+
+  /* Header injected via JS */
+  .codeblock-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--cb-border);
+    background: var(--cb-header-bg);
+  }
+
+  .codeblock-lang {
+    font-family: var(--base-font-family);
+    font-size: 12px;
+    color: var(--cb-muted);
+    letter-spacing: 0;
+  }
+
+  .copyCodeButton {
+    position: static; /* moved into header */
+    opacity: 1;
+    background: transparent;
+    border: 1px solid var(--cb-border);
+    color: var(--cb-muted);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    box-shadow: none;
+  }
+
+  .copyCodeButton:hover {
+    background: color-mix(in srgb, var(--cb-header-bg) 85%, #fff);
+  }
+
+  /* Code area */
+  .highlight pre {
+    margin: 0;
+    padding: 12px !important;
+    background: transparent !important;
+    color: var(--cb-fg);
+    overflow: auto;
+    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  /* Remove inner borders that can look dashed */
+  .chroma .lntable,
+  .chroma .lntd,
+  .chroma .lnt,
+  .chroma .ln {
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+  }
+
+  /* Subtle separator for line numbers */
+  .chroma .lntd:first-child {
+    box-shadow: inset -1px 0 0 var(--cb-border);
+  }
+
+  .chroma .ln,
+  .chroma .lnt {
+    color: color-mix(in srgb, var(--cb-fg) 30%, transparent);
+  }
+}
