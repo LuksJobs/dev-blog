@@ -147,184 +147,106 @@
   }
 }
 
-/* Code block palette: neutral/darker (avoid blue cast) with good contrast */
+/* Vercel/Geist-like code blocks */
 :root {
-  --codeblock-bg: #0f1115;
-  --codeblock-fg: rgba(255, 255, 255, 0.92);
-  --codeblock-border: rgba(255, 255, 255, 0.10);
-  --codeblock-header-bg: rgba(255, 255, 255, 0.06);
-  --codeblock-scrollbar-thumb: rgba(255, 255, 255, 0.18);
-  --codeblock-scrollbar-track: rgba(255, 255, 255, 0.06);
+  --geist-bg: #010101;
+  --geist-border: rgb(51, 51, 51);
+  --geist-fg: #fafafa;
+  --geist-header-bg: #010101;
+  --geist-header-fg: #999;
+  --geist-highlight-bg: rgba(248, 208, 79, 0.1);
+  --geist-highlight-border: #f8d04f;
+  --geist-copy-border: rgb(64, 64, 64);
 
-  &[data-scheme="dark"] {
-    --codeblock-bg: #0f1115;
-    --codeblock-fg: rgba(255, 255, 255, 0.92);
-    --codeblock-border: rgba(255, 255, 255, 0.12);
-    --codeblock-header-bg: rgba(255, 255, 255, 0.06);
-    --codeblock-scrollbar-thumb: rgba(255, 255, 255, 0.18);
-    --codeblock-scrollbar-track: rgba(255, 255, 255, 0.06);
-  }
-
-  /* Light scheme: keep it neutral and readable */
-  &:not([data-scheme="dark"]) {
-    --codeblock-bg: #111318;
-    --codeblock-fg: rgba(255, 255, 255, 0.92);
-    --codeblock-border: rgba(255, 255, 255, 0.10);
-    --codeblock-header-bg: rgba(255, 255, 255, 0.06);
-    --codeblock-scrollbar-thumb: rgba(255, 255, 255, 0.18);
-    --codeblock-scrollbar-track: rgba(255, 255, 255, 0.06);
+  &[data-scheme="light"] {
+    --geist-bg: #fafafa;
+    --geist-border: #eaeaea;
+    --geist-fg: #000;
+    --geist-header-bg: #fafafa;
+    --geist-header-fg: #666;
+    --geist-highlight-bg: rgba(0, 118, 255, 0.1);
+    --geist-highlight-border: #0070f3;
+    --geist-copy-border: #e1e1e1;
   }
 }
 
 .article-content {
-  /* Apply palette to both raw pre and Hugo highlight wrapper */
-  .highlight,
-  pre {
-    background: var(--codeblock-bg) !important;
-    color: var(--codeblock-fg);
-    border-color: var(--codeblock-border) !important;
-  }
-
-  /* Improve readability */
-  pre {
-    font-size: 0.95em;
-    line-height: 1.55;
-  }
-
-  /* Language badge */
-  .highlight::before {
-    background: var(--codeblock-header-bg);
-    border-color: var(--codeblock-border);
-    color: rgba(255, 255, 255, 0.85);
-  }
-
-  /* Scrollbar */
-  pre::-webkit-scrollbar-thumb {
-    background: var(--codeblock-scrollbar-thumb);
-  }
-  pre::-webkit-scrollbar-track {
-    background: var(--codeblock-scrollbar-track);
-  }
-}
-
-/* Post typography improvements */
-:root {
-  --reading-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-  --reading-font-size: 1.7rem;
-}
-
-.article-content {
-  font-family: var(--reading-font);
-  font-size: var(--reading-font-size);
-  line-height: 1.85;
-  letter-spacing: -0.005em;
-
-  p {
-    margin: 0 0 1.1em 0;
-  }
-
-  h1, h2, h3, h4 {
-    letter-spacing: -0.02em;
-  }
-}
-
-/* Code blocks: make them 'floated' and not full-bleed */
-.article-content {
-  .highlight,
-  pre {
+  /* Main container for the code block */
+  .highlight {
+    background: var(--geist-bg) !important;
+    border: 1px solid var(--geist-border) !important;
+    color: var(--geist-fg);
+    border-radius: 8px;
+    position: relative;
+    padding-top: 45px; /* Space for the header */
+    overflow: hidden;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
     margin-left: 0 !important;
     margin-right: 0 !important;
     width: auto !important;
-
-    border-radius: 12px;
   }
 
-  /* Keep inline code readable with the new font */
-  code:not([data-lang]) {
-    font-family: var(--code-font-family);
-    font-size: 0.95em;
-  }
-
-  /* A bit of breathing room so it looks like a modern “box” */
-  .highlight,
-  pre {
-    margin-top: 1.2em;
-    margin-bottom: 1.2em;
-  }
-}
-
-/* GitHub Gist-like code blocks */
-:root {
-  --gist-bg: #f6f8fa;
-  --gist-border: #d0d7de;
-  --gist-fg: #24292f;
-  --gist-header-bg: #f6f8fa;
-  --gist-header-fg: #57606a;
-
-  &[data-scheme="dark"] {
-    --gist-bg: #0d1117;
-    --gist-border: #30363d;
-    --gist-fg: #c9d1d9;
-    --gist-header-bg: #0d1117;
-    --gist-header-fg: #8b949e;
-  }
-}
-
-.article-content {
-  .highlight,
-  pre {
-    background: var(--gist-bg) !important;
-    border: 1px solid var(--gist-border) !important;
-    color: var(--gist-fg);
-    border-radius: 10px;
-  }
-
-  pre {
-    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  /* Raw <pre> element inside */
+  .highlight pre {
+    background: transparent !important;
+    border: none !important;
+    padding: 16px;
+    margin: 0;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     font-size: 14px;
-    line-height: 1.45;
+    line-height: 1.5;
   }
 
-  /* Header bar */
-  .highlight {
-    padding-top: calc(var(--card-padding) + 28px);
-
-    &::before {
-      content: attr(data-lang);
-      position: absolute;
-      left: 12px;
-      top: 10px;
-      padding: 2px 8px;
-      border-radius: 6px;
-      background: var(--gist-header-bg);
-      border: 1px solid var(--gist-border);
-      color: var(--gist-header-fg);
-      font-family: var(--base-font-family);
-      font-size: 12px;
-      text-transform: none;
-      letter-spacing: 0;
-    }
+  /* Header bar for lang + copy button */
+  .highlight .codeblock-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--geist-border);
+    background: var(--geist-header-bg);
+    font-family: var(--base-font-family);
+    font-size: 13px;
   }
 
-  /* Line numbers */
+  .highlight .codeblock-lang {
+    color: var(--geist-header-fg);
+    text-transform: uppercase;
+  }
+
+  .highlight .copyCodeButton {
+    background: transparent;
+    border: 1px solid var(--geist-copy-border);
+    color: var(--geist-header-fg);
+    border-radius: 6px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .highlight .copyCodeButton:hover {
+    border-color: var(--geist-fg);
+    color: var(--geist-fg);
+  }
+
+  /* Line numbers styling */
   .chroma .lnt,
   .chroma .ln {
-    color: color-mix(in srgb, var(--gist-fg) 35%, transparent);
+    color: #666;
+    padding-right: 1.5em !important;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
-  /* Copy button: gist-like */
-  .copyCodeButton {
-    border: 1px solid var(--gist-border);
-    background: var(--gist-bg);
-    color: var(--gist-header-fg);
-    box-shadow: none;
-  }
-
-  .copyCodeButton:hover {
-    background: color-mix(in srgb, var(--gist-bg) 92%, #fff);
-  }
-
-  /* Fix: remove odd dashed-looking inner borders from Chroma line-table layout */
+  /* Fix Chroma table layout issues (removes weird borders) */
   .chroma .lntable,
   .chroma .lntd,
   .chroma .lnt,
@@ -334,222 +256,22 @@
     background: transparent !important;
   }
 
-  /* Gist has a subtle solid separator between line numbers and code */
-  .chroma .lntd:first-child {
-    border-right: 1px solid color-mix(in srgb, var(--gist-border) 70%, transparent) !important;
-  }
-}
-
-/* GitHub Docs-like fenced code blocks */
-:root {
-  --gh-code-bg: #f6f8fa;
-  --gh-code-fg: #24292f;
-  --gh-code-border: rgba(27, 31, 36, 0.15);
-  --gh-code-muted: #57606a;
-
-  &[data-scheme="dark"] {
-    --gh-code-bg: #161b22;
-    --gh-code-fg: #e6edf3;
-    --gh-code-border: rgba(240, 246, 252, 0.15);
-    --gh-code-muted: rgba(230, 237, 243, 0.6);
-  }
-}
-
-.article-content {
-  /* wrapper + raw pre */
-  .highlight,
-  pre {
-    background: var(--gh-code-bg) !important;
-    border: 1px solid var(--gh-code-border) !important;
-    border-radius: 6px;
-    color: var(--gh-code-fg);
-  }
-
-  pre {
-    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    font-size: 14px;
-    line-height: 1.45;
-  }
-
-  /* remove any full-bleed behavior */
-  .highlight,
-  pre {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: auto !important;
-  }
-
-  /* Language label: subtle like GitHub (only when data-lang exists) */
-  .highlight[data-lang]::before {
-    content: attr(data-lang);
-    position: absolute;
-    left: 12px;
-    top: 10px;
-    padding: 2px 8px;
-    border-radius: 999px;
-    color: var(--gh-code-muted);
-    border: 1px solid var(--gh-code-border);
-    background: color-mix(in srgb, var(--gh-code-bg) 92%, #fff);
-    font-family: var(--base-font-family);
-    font-size: 12px;
-  }
-
-  /* Ensure room for the label */
-  .highlight[data-lang] {
-    padding-top: calc(var(--card-padding) + 26px);
-  }
-
-  /* Highlighted line styling (Geist-like) */
+  /* Highlighted line styling */
   .chroma .hl {
-    background-color: rgba(var(--accent-color-rgb), 0.1);
-    border-left: 3px solid var(--accent-color);
+    background-color: var(--geist-highlight-bg);
+    border-left: 2px solid var(--geist-highlight-border);
     display: block;
     width: 100%;
   }
 
   .chroma .lntd:last-child .hl {
-    padding-left: 1em;
-    margin-left: -1em;
-  }
-}
-
-/* GitHub-like padding/overflow */
-.article-content {
-  /* GitHub-like padding/overflow */
-  .highlight,
-  pre {
-    padding: 16px !important;
-    overflow: auto;
+    padding-left: 0.75em;
+    margin-left: -0.75em;
   }
 
-  /* When we have a language label, make room for it */
-  .highlight[data-lang] {
-    padding-top: 44px !important;
-  }
-
+  /* Disable old pseudo-element styles */
+  .highlight::before,
   .highlight[data-lang]::before {
-    top: 12px;
-    left: 12px;
-  }
-
-  /* Inline code like GitHub */
-  :not(pre) > code {
-    padding: 0.15em 0.35em;
-    border-radius: 6px;
-    background: color-mix(in srgb, var(--gh-code-bg) 70%, #fff);
-    border: 1px solid color-mix(in srgb, var(--gh-code-border) 70%, transparent);
-    font-size: 0.95em;
-  }
-
-  /* Scrollbar (WebKit) */
-  pre::-webkit-scrollbar {
-    height: 10px;
-    width: 10px;
-  }
-
-  pre::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--gh-code-border) 55%, transparent);
-    border-radius: 999px;
-  }
-
-  pre::-webkit-scrollbar-track {
-    background: transparent;
-  }
-}
-
-/* Final code block layout: compact header + line numbers always on */
-:root {
-  --cb-bg: #f6f8fa;
-  --cb-fg: #24292f;
-  --cb-border: rgba(27, 31, 36, 0.15);
-  --cb-muted: #57606a;
-  --cb-header-bg: #fff;
-
-  &[data-scheme="dark"] {
-    --cb-bg: #0d1117;
-    --cb-fg: #e6edf3;
-    --cb-border: rgba(240, 246, 252, 0.15);
-    --cb-muted: rgba(230, 237, 243, 0.65);
-    --cb-header-bg: #161b22;
-  }
-}
-
-.article-content {
-  .highlight {
-    position: relative;
-    background: var(--cb-bg) !important;
-    border: 1px solid var(--cb-border) !important;
-    border-radius: 10px;
-    overflow: hidden;
-    padding: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: auto !important;
-  }
-
-  /* Header injected via JS */
-  .codeblock-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--cb-border);
-    background: var(--cb-header-bg);
-  }
-
-  .codeblock-lang {
-    font-family: var(--base-font-family);
-    font-size: 12px;
-    color: var(--cb-muted);
-    letter-spacing: 0;
-  }
-
-  .copyCodeButton {
-    position: static; /* moved into header */
-    opacity: 1;
-    background: transparent;
-    border: 1px solid var(--cb-border);
-    color: var(--cb-muted);
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 12px;
-    box-shadow: none;
-  }
-
-  .copyCodeButton:hover {
-    background: color-mix(in srgb, var(--cb-header-bg) 85%, #fff);
-  }
-
-  /* Code area */
-  .highlight pre {
-    margin: 0;
-    padding: 12px !important;
-    background: transparent !important;
-    color: var(--cb-fg);
-    overflow: auto;
-    font-family: ui-monospace, SFMono-Regular, SFMono, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    font-size: 14px;
-    line-height: 1.45;
-  }
-
-  /* Remove inner borders that can look dashed */
-  .chroma .lntable,
-  .chroma .lntd,
-  .chroma .lnt,
-  .chroma .ln {
-    border: 0 !important;
-    outline: 0 !important;
-    background: transparent !important;
-  }
-
-  /* Subtle separator for line numbers */
-  .chroma .lntd:first-child {
-    box-shadow: inset -1px 0 0 var(--cb-border);
-  }
-
-  .chroma .ln,
-  .chroma .lnt {
-    color: color-mix(in srgb, var(--cb-fg) 30%, transparent);
+    display: none;
   }
 }
