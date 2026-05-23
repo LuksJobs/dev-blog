@@ -49,10 +49,10 @@ params:
         - post
     featuredImageField: image
     rssFullContent: true
-    favicon: /kubernetes.256x256.png
+    favicon: /icons/favicon.svg # e.g. favicon.ico
 
     footer:
-        since: 2020
+        since: 2021
         customText:
 
     dateFormat:
@@ -79,12 +79,9 @@ params:
         enabled: true
         provider: disqus
 
-        disqusjs:
-            shortname: https-luks-dev-br
-            apiUrl:
-            apiKey:
-            admin:
-            adminLabel:
+        disqus:
+            shortname:
+            # hideWhenLocal: true
 
         utterances:
             repo:
@@ -94,42 +91,8 @@ params:
         remark42:
             host:
             site:
-            locale:
-
-        vssue:
-            platform:
-            owner:
-            repo:
-            clientId:
-            clientSecret:
-            autoCreateIssue: false
-
-        # Waline client configuration see: https://waline.js.org/en/reference/component.html
-        waline:
-            serverURL:
-            lang:
-            pageview:
-            emoji:
-                - https://unpkg.com/@waline/emojis@1.0.1/weibo
-            requiredMeta:
-                - name
-                - email
-                - url
-            locale:
-                admin: Admin
-                placeholder:
-
-        twikoo:
-            envId:
-            region:
-            path:
-            lang:
-
-        # See https://cactus.chat/docs/reference/web-client/#configuration for description of the various options
-        cactus:
-            defaultHomeserverUrl: "https://matrix.cactus.chat:8448"
-            serverName: "cactus.chat"
-            siteName: "" # You must insert a unique identifier here matching the one you registered (See https://cactus.chat/docs/getting-started/quick-start/#register-your-site)
+            # completeURL: false
+            # hideWhenLocal: true
 
         giscus:
             repo:
@@ -139,19 +102,9 @@ params:
             mapping:
             lightTheme:
             darkTheme:
-            reactionsEnabled: 1
-            emitMetadata: 0
+            reactionsEnabled:
+            emitMetadata:
 
-        gitalk:
-            owner:
-            admin:
-            repo:
-            clientID:
-            clientSecret:
-
-        cusdis:
-            host:
-            id:
     widgets:
         homepage:
             - type: search
@@ -167,81 +120,6 @@ params:
         page:
             - type: toc
 
-    opengraph:
-        twitter:
-            # Your Twitter username
-            site:
-
-            # Available values: summary, summary_large_image
-            card: summary_large_image
-
-    defaultImage:
-        opengraph:
-            enabled: false
-            local: false
-            src:
-
-    colorScheme:
-        # Display toggle
-        toggle: true
-
-        # Available values: auto, light, dark
-        default: light
-
-    imageProcessing:
-        cover:
-            enabled: true
-        content:
-            enabled: true
-
-### Custom menu
-### See https://docs.stack.jimmycai.com/configuration/custom-menu.html
-### To remove about, archive and search page menu item, remove `menu` field from their FrontMatter
-menu:
-    main: []
-
-    social:
-        - identifier: github
-          name: GitHub
-          url: https://github.com/LuksJobs
-          params:
-              icon: brand-github
-        
-        - identifier: gitlab
-          name: GitLab
-          url: https://gitlab.com/luksjobs
-          params:
-              icon: brand-gitlab
-
-        - identifier: twitter
-          name: Twitter
-          url: https://twitter.com/luksjobs
-          params:
-              icon: brand-twitter
-        
-        - identifier: linkedin
-          name: linkedin
-          url: https://www.linkedin.com/in/luksjobs/
-          params:
-              icon: brand-linkedin
-        
-        - identifier: credly
-          name: credly
-          url: https://www.credly.com/users/lucas-oliveira-dantas/badges
-          params:
-              icon: brand-credly
-
-related:
-    includeNewer: true
-    threshold: 60
-    toLower: false
-    indices:
-        - name: tags
-          weight: 100
-
-        - name: categories
-          weight: 200
-
 markup:
     goldmark:
         renderer:
@@ -249,13 +127,13 @@ markup:
             unsafe: true
     tableOfContents:
         endLevel: 4
-        ordered: true
+        ordered: false
         startLevel: 2
     highlight:
+        # lineNos: true
+        # lineNumbersInTable: true
         noClasses: false
         codeFences: true
         guessSyntax: true
-        lineNoStart: 1
         lineNos: true
-        lineNumbersInTable: true
-        tabWidth: 4
+        style: monokai

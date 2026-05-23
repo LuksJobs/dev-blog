@@ -399,32 +399,21 @@
     padding-top: calc(var(--card-padding) + 26px);
   }
 
-  /* Line numbers: no dashed artifacts, subtle separator */
-  .chroma .lntable,
-  .chroma .lntd,
-  .chroma .lnt,
-  .chroma .ln {
-    border: 0 !important;
-    outline: 0 !important;
-    background: transparent !important;
-  }
-  .chroma .lntd:first-child {
-    box-shadow: inset -1px 0 0 var(--gh-code-border);
-  }
-  .chroma .ln,
-  .chroma .lnt {
-    color: color-mix(in srgb, var(--gh-code-fg) 35%, transparent);
+  /* Highlighted line styling (Geist-like) */
+  .chroma .hl {
+    background-color: rgba(var(--accent-color-rgb), 0.1);
+    border-left: 3px solid var(--accent-color);
+    display: block;
+    width: 100%;
   }
 
-  /* Copy button */
-  .copyCodeButton {
-    border: 1px solid var(--gh-code-border);
-    background: color-mix(in srgb, var(--gh-code-bg) 92%, #fff);
-    color: var(--gh-code-muted);
-    border-radius: 6px;
+  .chroma .lntd:last-child .hl {
+    padding-left: 1em;
+    margin-left: -1em;
   }
 }
 
+/* GitHub-like padding/overflow */
 .article-content {
   /* GitHub-like padding/overflow */
   .highlight,
