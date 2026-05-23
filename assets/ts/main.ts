@@ -114,69 +114,42 @@ let Stack = {
             }
 
             // Build header bar (language + copy)
-            if (!highlight.querySelector('.codeblock-header')) {
-                const header = document.createElement('div');
-                header.className = 'codeblock-header';
+            if (highlight.querySelector('.codeblock-header')) return;
 
-                const langEl = document.createElement('span');
-                langEl.className = 'codeblock-lang';
-                langEl.textContent = label || 'Code';
+            const header = document.createElement('div');
+            header.className = 'codeblock-header';
 
-                const copyButton = document.createElement('button');
-                copyButton.type = 'button';
-                copyButton.classList.add('copyCodeButton');
-                copyButton.textContent = copyText;
+            const langEl = document.createElement('span');
+            langEl.className = 'codeblock-lang';
+            langEl.textContent = label || 'Code';
 
-                header.appendChild(langEl);
-                header.appendChild(copyButton);
-                highlight.insertBefore(header, highlight.firstChild);
-
-                if (codeBlock) {
-                    copyButton.addEventListener('click', () => {
-                        navigator.clipboard.writeText(codeBlock.textContent || '')
-                            .then(() => {
-                                copyButton.textContent = copiedText;
-                                setTimeout(() => {
-                                    copyButton.textContent = copyText;
-                                }, 1000);
-                            })
-                            .catch(err => {
-                                alert(err)
-                                console.log('Something went wrong', err);
-                            });
-                    });
-                }
-
-                // Fallback: if no code block detected, disable copy
-                if (!codeBlock) {
-                    copyButton.setAttribute('disabled', 'true');
-                }
-
-                return;
-            }
-
-            // Legacy fallback (should not run when header exists)
             const copyButton = document.createElement('button');
-            copyButton.innerHTML = copyText;
+            copyButton.type = 'button';
             copyButton.classList.add('copyCodeButton');
-            highlight.appendChild(copyButton);
+            copyButton.textContent = copyText;
 
-            if (!codeBlock) return;
+            header.appendChild(langEl);
+            header.appendChild(copyButton);
+            highlight.insertBefore(header, highlight.firstChild);
 
-            copyButton.addEventListener('click', () => {
-                navigator.clipboard.writeText(codeBlock.textContent || '')
-                    .then(() => {
-                        copyButton.textContent = copiedText;
-
-                        setTimeout(() => {
-                            copyButton.textContent = copyText;
-                        }, 1000);
-                    })
-                    .catch(err => {
-                        alert(err)
-                        console.log('Something went wrong', err);
-                    });
-            });
+            if (codeBlock) {
+                copyButton.addEventListener('click', () => {
+                    navigator.clipboard.writeText(codeBlock.textContent || '')
+                        .then(() => {
+                            copyButton.textContent = copiedText;
+                            setTimeout(() => {
+                                copyButton.textContent = copyText;
+                            }, 1000);
+                        })
+                        .catch(err => {
+                            alert(err)
+                            console.log('Something went wrong', err);
+                        });
+                });
+            } else {
+                // Fallback: if no code block detected, disable copy
+                copyButton.setAttribute('disabled', 'true');
+            }
         });
 
         new StackColorScheme(document.getElementById('dark-mode-toggle'));
