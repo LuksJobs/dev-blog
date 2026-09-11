@@ -57,6 +57,12 @@
   }
 }
 
+.twitter-widget {
+  background: var(--card-background);
+  border-radius: var(--card-border-radius);
+  overflow: hidden;
+}
+
 // Responsive: on small screens keep it compact
 @media (max-width: 480px) {
   .article-details {
