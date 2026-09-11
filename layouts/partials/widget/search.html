@@ -11,9 +11,39 @@
             </button>
         </p>
     </form>
-    <!-- Twitter Profile Link -->
-    <blockquote class="twitter-tweet" data-theme="light" data-dnt="true" align="center"><p lang="en" dir="ltr">development of a complete tool for vulnerability scanning, SBOM generation and SLSA verification with AI-generated explanations 🤖 <a href="https://t.co/As0WcFMLlX">pic.twitter.com/As0WcFMLlX</a></p>&mdash; Lucas Oliveira (@luksjobs) <a href="https://twitter.com/luksjobs/status/1972500402567602246?ref_src=twsrc%5Etfw">September 29, 2025</a></blockquote>
+    <div id="twitter-widget" class="twitter-widget"></div>
+    <template id="twitter-widget-template">
+        <!-- Twitter Profile Link -->
+        <blockquote class="twitter-tweet" data-dnt="true" align="center"><p lang="en" dir="ltr">development of a complete tool for vulnerability scanning, SBOM generation and SLSA verification with AI-generated explanations 🤖 <a href="https://t.co/As0WcFMLlX">pic.twitter.com/As0WcFMLlX</a></p>&mdash; Lucas Oliveira (@luksjobs) <a href="https://twitter.com/luksjobs/status/1972500402567602246?ref_src=twsrc%5Etfw">September 29, 2025</a></blockquote>
+    </template>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script>
+        (function () {
+            const widgetRoot = document.getElementById('twitter-widget');
+            const widgetTemplate = document.getElementById('twitter-widget-template');
+
+            if (!widgetRoot || !widgetTemplate) {
+                return;
+            }
+
+            function renderWidget(theme) {
+                const blockquote = widgetTemplate.content.firstElementChild.cloneNode(true);
+                blockquote.setAttribute('data-theme', theme);
+
+                widgetRoot.replaceChildren(blockquote);
+
+                if (window.twttr && window.twttr.widgets) {
+                    window.twttr.widgets.load(widgetRoot);
+                }
+            }
+
+            renderWidget(document.documentElement.dataset.scheme || 'light');
+
+            window.addEventListener('onColorSchemeChange', (e) => {
+                renderWidget(e.detail);
+            });
+        })();
+    </script>
 {{- else -}}
     {{- warnf "Search page not found. Create a page with layout: search." -}}
 {{- end -}}
