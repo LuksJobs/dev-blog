@@ -17,7 +17,7 @@ categories:
   - seguranca
 slug: "onboarding-aplicacoes-geradas-por-ia-devsecops"
 author: "Lucas Oliveira"
-image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80"
+image: "https://i.imgur.com/f9FrS3C.jpeg"
 toc: true
 ---
 

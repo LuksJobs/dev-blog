@@ -27,7 +27,7 @@
             }
 
             function renderWidget(theme) {
-                const widgetTheme = theme === 'dark' ? 'dim' : 'light';
+                const widgetTheme = theme === 'dark' ? 'dark' : 'light';
                 const blockquote = widgetTemplate.content.firstElementChild.cloneNode(true);
                 blockquote.setAttribute('data-theme', widgetTheme);
 
