@@ -58,9 +58,20 @@
 }
 
 .twitter-widget {
-  background: var(--card-background);
+  background-color: var(--card-background);
+  border: 1px solid var(--card-separator-color);
   border-radius: var(--card-border-radius);
   overflow: hidden;
+
+  .twitter-tweet,
+  iframe {
+    background-color: transparent !important;
+  }
+
+  iframe {
+    display: block;
+    width: 100%;
+  }
 }
 
 // Responsive: on small screens keep it compact
