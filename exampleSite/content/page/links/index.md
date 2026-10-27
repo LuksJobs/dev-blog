@@ -1,14 +1,55 @@
 ---
 title: Links
+description: Onde me encontrar — perfil profissional, currículo acadêmico, código e conteúdo.
 links:
-  - title: GitHub
-    description: GitHub is the world's largest software development platform.
-    website: https://github.com
-    image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-  - title: TypeScript
-    description: TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.
-    website: https://www.typescriptlang.org
-    image: ts-logo-128.jpg
+  - group: Profissional
+    items:
+      - title: LinkedIn
+        handle: in/luksjobs
+        description: Trajetória profissional, experiências e networking.
+        website: https://www.linkedin.com/in/luksjobs/
+        icon: brand-linkedin
+      - title: Currículo Lattes
+        handle: lattes.cnpq.br/8767989273085683
+        description: Formação acadêmica e trajetória registradas na Plataforma Lattes do CNPq.
+        website: https://lattes.cnpq.br/8767989273085683
+        icon: school
+      - title: E-mail
+        handle: luksjobs@live.com
+        description: Para propostas, parcerias, palestras ou dúvidas sobre os artigos.
+        website: mailto:luksjobs@live.com
+        icon: mail
+  - group: Código
+    items:
+      - title: GitHub
+        handle: LuksJobs
+        description: Projetos, scripts e exemplos usados nos artigos.
+        website: https://github.com/LuksJobs
+        icon: brand-github
+      - title: GitLab
+        handle: luksjobs
+        description: Pipelines e exemplos de CI/CD.
+        website: https://gitlab.com/luksjobs
+        icon: brand-gitlab
+  - group: Conteúdo
+    items:
+      - title: X
+        handle: "@luksjobs"
+        description: Posts curtos, prévias de projetos e novidades.
+        website: https://x.com/luksjobs
+        icon: brand-x
+      - title: RSS
+        handle: luks.dev.br/index.xml
+        description: Receba os novos artigos do blog no seu leitor de feeds.
+        website: /index.xml
+        icon: rss
+  - group: Comunidade
+    items:
+      - title: Cloud Native RN
+        handle: CNCF Community Group
+        description: Comunidade cloud native do Rio Grande do Norte.
+        website: https://www.linkedin.com/company/cloudnativern/
+        icon: link
 menu:
     main: 
         weight: -50
@@ -18,18 +59,4 @@ menu:
 comments: false
 ---
 
-<h2 align="center">Minhas Redes Sociais 🤝 </h2>
-<div align="left">
- <a href="https://www.linkedin.com/in/luksjobs/" target="_blank">
-<img src=https://img.shields.io/badge/linkedin-%231E77B5.svg?&style=for-the-badge&logo=linkedin&logoColor=white alt=linkedin style="margin-bottom: 5px;" />
-</a>
-  
-<a href="mailto:luksjobs@live.com" target="_blank">
-<img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt=kirannaragund197@gmail.com mail style="margin-bottom: 5px;" />
-</a>
-
-<a href="https://twitter.com/luksjobs" target="_blank">
-<img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="kiran__a__n Twitter" style="margin-bottom: 5px;" />
-</a>
-</div>
-<br/>
+Todos os lugares onde publico, compartilho código ou posso ser encontrado. Para saber mais sobre mim, veja a página [Sobre]({{< relref "page/about" >}}).

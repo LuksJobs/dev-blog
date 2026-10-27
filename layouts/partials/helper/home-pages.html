@@ -1,0 +1,23 @@
+{{/*
+    Posts listed on the homepage.
+    On secondary languages (and with params.showUntranslated), posts from the
+    default language that have no translation yet are listed too.
+*/}}
+{{- $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
+{{- $notHidden := where .Site.RegularPages "Params.hidden" "!=" true -}}
+{{- $filtered := ($pages | intersect $notHidden) -}}
+
+{{- $defaultSite := index .Sites 0 -}}
+{{- if and .Site.Params.showUntranslated (ne .Language.Lang $defaultSite.Language.Lang) -}}
+    {{- $original := where $defaultSite.RegularPages "Type" "in" .Site.Params.mainSections -}}
+    {{- $original = where $original "Params.hidden" "!=" true -}}
+
+    {{- $translated := slice -}}
+    {{- range $filtered -}}{{- range .Translations -}}{{- $translated = $translated | append . -}}{{- end -}}{{- end -}}
+
+    {{- $untranslated := $original -}}
+    {{- with $translated -}}{{- $untranslated = complement . $original -}}{{- end -}}
+    {{- $filtered = ($filtered | union $untranslated).ByDate.Reverse -}}
+{{- end -}}
+
+{{- return $filtered -}}

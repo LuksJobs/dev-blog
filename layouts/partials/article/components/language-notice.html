@@ -1,0 +1,40 @@
+{{/* Contextual language bar shown at the top of an article */}}
+{{- $page := . -}}
+{{- $current := .Language.Lang -}}
+{{- $from := default $current .Site.Params.translateCode -}}
+
+{{- $autoLinks := slice -}}
+{{- range .Sites -}}
+    {{- $lang := .Language.Lang -}}
+    {{- if and (ne $lang $current) (not (where $page.Translations "Lang" $lang)) -}}
+        {{- $to := default $lang .Params.translateCode -}}
+        {{- $autoLinks = $autoLinks | append (dict "href" (partial "helper/translate-url" (dict "URL" $page.Permalink "From" $from "To" $to)) "lang" $lang "label" (default .Language.LanguageName .Params.readIn)) -}}
+    {{- end -}}
+{{- end -}}
+{{- range .Site.Params.autoTranslate -}}
+    {{- $autoLinks = $autoLinks | append (dict "href" (partial "helper/translate-url" (dict "URL" $page.Permalink "From" $from "To" .code)) "lang" .code "label" (default .label .readIn)) -}}
+{{- end -}}
+
+{{- if or .IsTranslated $autoLinks -}}
+<aside class="language-notice">
+    {{ partial "helper/icon" "language" }}
+    <div class="language-notice__body">
+        {{- if .IsTranslated -}}
+            <p>
+                <span>{{ T "language.availableIn" }}:</span>
+                {{ range .Translations }}
+                    <a href="{{ .Permalink }}" hreflang="{{ .Lang }}" lang="{{ .Lang }}">{{ default .Language.LanguageName .Site.Params.readIn }}</a>
+                {{ end }}
+            </p>
+        {{- end -}}
+        {{- with $autoLinks -}}
+            <p>
+                <span>{{ T "language.autoTranslate" }}</span>
+                {{ range . }}
+                    <a href="{{ .href }}" rel="nofollow" lang="{{ .lang }}" class="is-auto">{{ .label }}</a>
+                {{ end }}
+            </p>
+        {{- end -}}
+    </div>
+</aside>
+{{- end -}}

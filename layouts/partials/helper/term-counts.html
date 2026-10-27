@@ -1,0 +1,19 @@
+{{/*
+    Counts taxonomy terms used by a set of pages.
+    Usage: partial "helper/term-counts" (dict "Pages" $pages "Taxonomy" "categories")
+    Returns a slice of dicts {title, url, count}, most used first.
+*/}}
+{{- $counts := dict -}}
+{{- $taxonomy := .Taxonomy -}}
+{{- range .Pages -}}
+    {{- range .GetTerms $taxonomy -}}
+        {{- $key := lower .LinkTitle -}}
+        {{- $n := 1 -}}
+        {{- with index $counts $key -}}{{- $n = add .count 1 -}}{{- end -}}
+        {{- $counts = merge $counts (dict $key (dict "title" .LinkTitle "url" .RelPermalink "count" $n)) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $list := slice -}}
+{{- range $counts -}}{{- $list = $list | append . -}}{{- end -}}
+{{- return sort $list "count" "desc" -}}

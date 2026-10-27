@@ -4,11 +4,12 @@ function setTemporaryStatus(button: HTMLButtonElement, labelEl: HTMLElement | nu
     const originalLabel = button.getAttribute('data-original-label') ?? (labelEl?.textContent ?? 'Compartilhar');
     button.setAttribute('data-original-label', originalLabel);
 
+    // Localized labels come from data-label-* attributes rendered by Hugo
     const map: Record<ShareStatus, string> = {
-        shared: 'Compartilhado',
-        copied: 'Link copiado',
-        cancelled: 'Cancelado',
-        error: 'Erro'
+        shared: button.dataset.labelShared || 'Compartilhado',
+        copied: button.dataset.labelCopied || 'Link copiado',
+        cancelled: button.dataset.labelCancelled || 'Cancelado',
+        error: button.dataset.labelError || 'Erro'
     };
 
     const next = map[status];

@@ -31,8 +31,8 @@
         {{ if $showDate }}
             <div>
                 {{ partial "helper/icon" "date" }}
-                <time class="article-time--published">
-                    {{- .Date.Format (or .Site.Params.dateFormat.published "Jan 02, 2006") -}}
+                <time class="article-time--published" datetime="{{ .Date.Format "2006-01-02" }}">
+                    {{- time.Format (or .Site.Params.dateFormat.published "Jan 02, 2006") .Date -}}
                 </time>
             </div>
         {{ end }}
@@ -49,22 +49,15 @@
         <button class="article-share" type="button"
             data-share-button
             data-share-url="{{ .Permalink }}"
-            data-share-title="{{ .Title }}">
+            data-share-title="{{ .Title }}"
+            data-label-shared="{{ T `article.shared` }}"
+            data-label-copied="{{ T `article.linkCopied` }}"
+            data-label-cancelled="{{ T `article.shareCancelled` }}"
+            data-label-error="{{ T `article.shareError` }}">
             {{ partial "helper/icon" "repost" }}
-            <span data-share-label>Share</span>
+            <span data-share-label>{{ T "article.share" }}</span>
             <span class="article-share__count" data-share-count aria-hidden="true">0</span>
         </button>
     </footer>
-    {{ end }}
-
-    {{ if .IsTranslated }}
-        <footer class="article-translations">
-            {{ partial "helper/icon" "language" }}
-            <div>
-                {{ range .Translations }}
-                    <a href="{{ .Permalink }}" class="link">{{ .Language.LanguageName }}</a>
-                {{ end }}
-            </div>
-        </footer>
     {{ end }}
 </div>

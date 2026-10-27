@@ -17,6 +17,17 @@ list:
         other: Subsections
 
 article:
+    share:
+        other: Share
+    shared:
+        other: Shared
+    linkCopied:
+        other: Link copied
+    shareCancelled:
+        other: Cancelled
+    shareError:
+        other: Error
+
     back:
         other: Back
 
@@ -63,7 +74,15 @@ search:
         other: Type something...
 
     resultTitle:
-        other: "#PAGES_COUNT pages (#TIME_SECONDS seconds)"
+        other: "#PAGES_COUNT results · #TIME_SECONDS s"
+    subtitle:
+        other: "Search titles and content across {{ .Count }} articles."
+    suggestions:
+        other: Popular topics
+    noResults:
+        other: "No results for “#KEYWORD”. Try another term or one of the topics below."
+    shortcut:
+        other: to focus
 
 footer:
     builtWith:
@@ -71,3 +90,52 @@ footer:
 
     designedBy:
         other: Desenvolvido por Lucas Oliveira
+
+language:
+    label:
+        other: Language
+    auto:
+        other: machine translation
+    availableIn:
+        other: Also available in
+    autoTranslate:
+        other: "No reviewed translation yet. Machine translation:"
+    untranslatedBadge:
+        other: In Portuguese · machine-translated
+
+code:
+    copy:
+        other: Copy
+    copied:
+        other: Copied!
+
+xPost:
+    follow:
+        other: Follow
+    watch:
+        other: Watch on X
+    readMore:
+        other: Read more on X
+    carousel:
+        other: Latest posts on X
+    previous:
+        other: Previous post
+    next:
+        other: Next post
+    slide:
+        other: "Post {{ .Index }} of {{ .Total }}"
+
+archives:
+    posts:
+        one: article
+        other: articles
+    years:
+        one: year
+        other: years
+    categories:
+        one: category
+        other: categories
+    byCategory:
+        other: By category
+    timeline:
+        other: Timeline

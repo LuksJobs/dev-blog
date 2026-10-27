@@ -1,14 +1,22 @@
 {{ define "body-class" }}template-search{{ end }}
 {{ define "head" }}
-    {{- with .OutputFormats.Get "json" -}} 
+    {{- with .OutputFormats.Get "json" -}}
         <link rel="preload" href="{{ .RelPermalink }}" as="fetch" crossorigin="anonymous">
     {{- end -}}
 {{ end }}
 {{ define "main" }}
-<form action="{{ .RelPermalink }}" class="search-form"{{ with .OutputFormats.Get "json" -}} data-json="{{ .RelPermalink }}"{{- end }}>
+{{ $pages := partial "helper/home-pages" . }}
+
+<header class="search-hero">
+    <h1 class="search-hero__title">{{ .Title }}</h1>
+    <p class="search-hero__subtitle">{{ T "search.subtitle" (dict "Count" (len $pages)) }}</p>
+</header>
+
+<form action="{{ .RelPermalink }}" class="search-form search-form--page"{{ with .OutputFormats.Get "json" -}} data-json="{{ .RelPermalink }}"{{- end }}>
     <p>
-        <label>{{ T "search.title" }}</label>
-        <input name="keyword" placeholder="{{ T `search.placeholder` }}" />
+        <label for="search-input">{{ T "search.title" }}</label>
+        <input id="search-input" name="keyword" placeholder="{{ T `search.placeholder` }}" autocomplete="off" autofocus />
+        <span class="search-form__hint" aria-hidden="true"><kbd>/</kbd> {{ T "search.shortcut" }}</span>
     </p>
 
     <button title="{{ T `search.title` }}">
@@ -16,13 +24,26 @@
     </button>
 </form>
 
+
 <div class="search-result">
     <h3 class="search-result--title section-title"></h3>
     <div class="search-result--list article-list--compact"></div>
 </div>
 
+{{ with first 14 (partial "helper/term-counts" (dict "Pages" $pages "Taxonomy" "tags")) }}
+<section class="search-suggestions" data-search-suggestions>
+    <h2 class="section-title">{{ T "search.suggestions" }}</h2>
+    <div class="search-suggestions__list">
+        {{ range . }}
+            <a href="?keyword={{ .title | urlquery }}">{{ .title }}<span>{{ .count }}</span></a>
+        {{ end }}
+    </div>
+</section>
+{{ end }}
+
 <script>
-    window.searchResultTitleTemplate = "{{ T `search.resultTitle` }}"
+    window.searchResultTitleTemplate = "{{ T `search.resultTitle` }}";
+    window.searchNoResultsTemplate = "{{ T `search.noResults` }}";
 </script>
 
 {{- $opts := dict "minify" hugo.IsProduction "JSXFactory" "createElement" -}}

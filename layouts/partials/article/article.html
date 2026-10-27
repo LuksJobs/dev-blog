@@ -1,6 +1,8 @@
 <article class="{{ if .Params.image }}has-image {{ end }}main-article">
     {{ partial "article/components/header" . }}
 
+    {{ partial "article/components/language-notice" . }}
+
     {{ partial "article/components/content" . }}
 
     {{ partial "article/components/footer" . }}

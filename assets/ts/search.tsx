@@ -4,6 +4,7 @@ interface pageData {
     permalink: string,
     content: string,
     image?: string,
+    lang?: string,
     preview: string,
     matchCount: number
 }
@@ -45,13 +46,17 @@ class Search {
     private list: HTMLDivElement;
     private resultTitle: HTMLHeadElement;
     private resultTitleTemplate: string;
+    private noResultsTemplate: string;
+    private suggestions: HTMLElement | null;
 
-    constructor({ form, input, list, resultTitle, resultTitleTemplate }) {
+    constructor({ form, input, list, resultTitle, resultTitleTemplate, noResultsTemplate, suggestions }) {
         this.form = form;
         this.input = input;
         this.list = list;
         this.resultTitle = resultTitle;
         this.resultTitleTemplate = resultTitleTemplate;
+        this.noResultsTemplate = noResultsTemplate;
+        this.suggestions = suggestions;
 
         this.handleQueryString();
         this.bindQueryStringChange();
@@ -195,7 +200,19 @@ class Search {
 
         const endTime = performance.now();
 
-        this.resultTitle.innerText = this.generateResultTitle(results.length, ((endTime - startTime) / 1000).toPrecision(1));
+        if (results.length === 0) {
+            this.list.append(<div class="search-empty">{this.noResultsTemplate.replace('#KEYWORD', this.input.value.trim())}</div>);
+        }
+        else {
+            this.resultTitle.innerText = this.generateResultTitle(results.length, ((endTime - startTime) / 1000).toPrecision(1));
+        }
+
+        // Topic suggestions only help when there is nothing to show
+        this.toggleSuggestions(results.length === 0);
+    }
+
+    private toggleSuggestions(visible: boolean) {
+        if (this.suggestions) this.suggestions.hidden = !visible;
     }
 
     private generateResultTitle(resultLen, time) {
@@ -244,6 +261,7 @@ class Search {
     private clear() {
         this.list.innerHTML = '';
         this.resultTitle.innerText = '';
+        this.toggleSuggestions(true);
     }
 
     private bindQueryStringChange() {
@@ -284,9 +302,17 @@ class Search {
     }
 
     public static render(item: pageData) {
+        const pageLang = document.documentElement.lang;
+        const date = new Date(item.date).toLocaleDateString(pageLang || undefined, { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
+        const foreign = item.lang && !pageLang.toLowerCase().startsWith(item.lang.split('-')[0]);
+
         return <article>
             <a href={item.permalink}>
                 <div class="article-details">
+                    <footer class="search-result__meta">
+                        <time>{date}</time>
+                        {foreign && <span class="search-result__lang">{item.lang.split('-')[0].toUpperCase()}</span>}
+                    </footer>
                     <h2 class="article-title" dangerouslySetInnerHTML={{ __html: item.title }}></h2>
                     <section class="article-preview" dangerouslySetInnerHTML={{ __html: item.preview }}></section>
                 </div>
@@ -303,6 +329,7 @@ class Search {
 declare global {
     interface Window {
         searchResultTitleTemplate: string;
+        searchNoResultsTemplate: string;
     }
 }
 
@@ -318,7 +345,19 @@ window.addEventListener('load', () => {
             input: searchInput,
             list: searchResultList,
             resultTitle: searchResultTitle,
-            resultTitleTemplate: window.searchResultTitleTemplate
+            resultTitleTemplate: window.searchResultTitleTemplate,
+            noResultsTemplate: window.searchNoResultsTemplate || '',
+            suggestions: document.querySelector('[data-search-suggestions]') as HTMLElement
+        });
+
+        // Press "/" anywhere on the page to focus the search field
+        document.addEventListener('keydown', (e) => {
+            const target = e.target as HTMLElement;
+            const typing = target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+            if (e.key === '/' && !typing) {
+                e.preventDefault();
+                searchInput.focus();
+            }
         });
     }, 0);
 })

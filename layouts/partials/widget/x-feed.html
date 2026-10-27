@@ -1,0 +1,98 @@
+{{/*
+    Carousel of posts on X (params.xFeed.posts = list of post URLs, newest first).
+    Each post is fetched at build time from X's public syndication endpoint;
+    posts that can't be fetched are skipped with a warning.
+*/}}
+{{- $posts := slice -}}
+{{- range .Site.Params.xFeed.posts -}}
+    {{- $url := . -}}
+    {{- $id := replaceRE `.*/status/(\d+).*` "$1" $url -}}
+    {{- $api := printf "https://cdn.syndication.twimg.com/tweet-result?id=%s&token=4" $id -}}
+    {{- with try (resources.GetRemote $api) -}}
+        {{- with .Err -}}
+            {{- warnf "xFeed: could not fetch %s: %s" $url . -}}
+        {{- else with .Value -}}
+            {{- $data := . | transform.Unmarshal -}}
+            {{- if $data.text -}}
+                {{- $media := "" -}}
+                {{- $video := false -}}
+                {{- with index ($data.mediaDetails | default slice) 0 -}}
+                    {{- $media = .media_url_https -}}
+                    {{- $video = in (slice "video" "animated_gif") .type -}}
+                {{- end -}}
+                {{- $posts = $posts | append (dict
+                    "url" $url
+                    "text" (replaceRE `(\s*https://t\.co/\w+)+\s*$` "" $data.text | htmlUnescape)
+                    "date" $data.created_at
+                    "name" $data.user.name
+                    "handle" $data.user.screen_name
+                    "avatar" (replace $data.user.profile_image_url_https "_normal." "_bigger.")
+                    "media" $media
+                    "video" $video
+                ) -}}
+            {{- else -}}
+                {{- warnf "xFeed: post unavailable (deleted or private): %s" $url -}}
+            {{- end -}}
+        {{- else -}}
+            {{- warnf "xFeed: post not found: %s" $url -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $total := len $posts -}}
+{{- if $total -}}
+<section class="x-feed" data-x-feed aria-roledescription="carousel" aria-label="{{ T `xPost.carousel` }}">
+    <div class="x-feed__track" data-x-feed-track tabindex="0">
+        {{- range $i, $p := $posts -}}
+        <article class="x-post" aria-roledescription="slide" aria-label="{{ T `xPost.slide` (dict `Index` (add $i 1) `Total` $total) }}">
+            <div class="x-post__header">
+                <a class="x-post__author" href="https://x.com/{{ $p.handle }}" target="_blank" rel="noopener">
+                    <img class="x-post__avatar" src="{{ $p.avatar }}" width="40" height="40" alt="" loading="lazy">
+                    <span class="x-post__names">
+                        <strong>{{ $p.name }}</strong>
+                        <span>@{{ $p.handle }} · <span class="x-post__follow">{{ T "xPost.follow" }}</span></span>
+                    </span>
+                </a>
+                <a class="x-post__logo" href="{{ $p.url }}" target="_blank" rel="noopener" aria-label="X">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+            </div>
+
+            <p class="x-post__text">{{ $p.text }}</p>
+
+            {{ with $p.media }}
+            <a class="x-post__media" href="{{ $p.url }}" target="_blank" rel="noopener">
+                <img src="{{ . }}" alt="" loading="lazy">
+                {{ if $p.video }}
+                    <span class="x-post__play" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.5v13l11-6.5z"/></svg>
+                    </span>
+                    <span class="x-post__watch">{{ T "xPost.watch" }}</span>
+                {{ end }}
+            </a>
+            {{ end }}
+
+            <time class="x-post__date" datetime="{{ $p.date }}">{{ time.Format ":date_medium" $p.date }}</time>
+
+            <a class="x-post__cta" href="{{ $p.url }}" target="_blank" rel="noopener">{{ T "xPost.readMore" }}</a>
+        </article>
+        {{- end -}}
+    </div>
+
+    {{ if gt $total 1 }}
+    <div class="x-feed__nav">
+        <button type="button" class="x-feed__arrow" data-x-feed-prev aria-label="{{ T `xPost.previous` }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <div class="x-feed__dots">
+            {{ range $i, $p := $posts }}
+                <button type="button" class="x-feed__dot" data-x-feed-dot="{{ $i }}" aria-label="{{ T `xPost.slide` (dict `Index` (add $i 1) `Total` $total) }}"></button>
+            {{ end }}
+        </div>
+        <button type="button" class="x-feed__arrow" data-x-feed-next aria-label="{{ T `xPost.next` }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+        </button>
+    </div>
+    {{ end }}
+</section>
+{{- end -}}

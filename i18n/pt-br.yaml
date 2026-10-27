@@ -17,6 +17,17 @@ list:
         other: Subseções
 
 article:
+    share:
+        other: Compartilhar
+    shared:
+        other: Compartilhado
+    linkCopied:
+        other: Link copiado
+    shareCancelled:
+        other: Cancelado
+    shareError:
+        other: Erro
+
     back:
         other: Voltar
 
@@ -58,10 +69,67 @@ search:
     placeholder:
         other: Digite algo...
     resultTitle:
-        other: "#PAGES_COUNT páginas (#TIME_SECONDS segundos)"
+        other: "#PAGES_COUNT resultados · #TIME_SECONDS s"
+    subtitle:
+        other: "Busque por título ou conteúdo entre {{ .Count }} artigos."
+    suggestions:
+        other: Tópicos populares
+    noResults:
+        other: "Nenhum resultado para “#KEYWORD”. Tente outro termo ou um dos tópicos abaixo."
+    shortcut:
+        other: para focar
 
 footer:
     builtWith:
         other: Criado com {{ .Generator }}
     designedBy:
         other: Tema {{ .Theme }} desenvolvido por {{ .DesignedBy }}
+
+language:
+    label:
+        other: Idioma
+    auto:
+        other: tradução automática
+    availableIn:
+        other: Também disponível em
+    autoTranslate:
+        other: "Sem tradução revisada ainda. Tradução automática:"
+    untranslatedBadge:
+        other: Em português · tradução automática
+
+code:
+    copy:
+        other: Copiar
+    copied:
+        other: Copiado!
+
+xPost:
+    follow:
+        other: Seguir
+    watch:
+        other: Assista no X
+    readMore:
+        other: Leia mais no X
+    carousel:
+        other: Posts recentes no X
+    previous:
+        other: Post anterior
+    next:
+        other: Próximo post
+    slide:
+        other: "Post {{ .Index }} de {{ .Total }}"
+
+archives:
+    posts:
+        one: artigo
+        other: artigos
+    years:
+        one: ano
+        other: anos
+    categories:
+        one: categoria
+        other: categorias
+    byCategory:
+        other: Por categoria
+    timeline:
+        other: Linha do tempo

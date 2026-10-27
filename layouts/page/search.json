@@ -1,11 +1,9 @@
-{{- $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
-{{- $notHidden := where .Site.RegularPages "Params.hidden" "!=" true -}}
-{{- $filtered := ($pages | intersect $notHidden) -}}
+{{- $filtered := partial "helper/home-pages" . -}}
 
 {{- $result := slice -}}
 
 {{- range $filtered -}}
-    {{- $data := dict "title" .Title "date" .Date "permalink" .Permalink "content" (.Plain) -}}
+    {{- $data := dict "title" .Title "date" .Date "permalink" .Permalink "content" (.Plain) "lang" .Lang -}}
 
     {{- $image := partialCached "helper/image" (dict "Context" . "Type" "articleList") .RelPermalink "articleList" -}}
     {{- if $image.exists -}}
@@ -16,7 +14,7 @@
         {{- else -}}
             {{- $imagePermalink = $image.permalink -}}
         {{- end -}}
-        
+
         {{- $data = merge $data (dict "image" (absURL $imagePermalink)) -}}
     {{- end -}}
 

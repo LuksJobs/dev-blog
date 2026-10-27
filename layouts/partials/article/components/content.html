@@ -1,4 +1,4 @@
-<section class="article-content">
+<section class="article-content" data-copy-label="{{ T `code.copy` }}" data-copied-label="{{ T `code.copied` }}">
     <!-- Refer to https://discourse.gohugo.io/t/responsive-tables-in-markdown/10639/5 -->
     {{ $wrappedTable := printf "<div class=\"table-wrapper\">${1}</div>" }}
     {{ .Content | replaceRE "(<table>(?:.|\n)+?</table>)" $wrappedTable | safeHTML }}

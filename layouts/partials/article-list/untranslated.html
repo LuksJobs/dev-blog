@@ -1,0 +1,58 @@
+{{/*
+    Card for a post that only exists in another language.
+    Usage: partial "article-list/untranslated" (dict "Page" $post "Site" $.Site)
+    Links to the machine-translated version of the original post.
+*/}}
+{{- $post := .Page -}}
+{{- $from := default $post.Lang $post.Site.Params.translateCode -}}
+{{- $to := default .Site.Language.Lang .Site.Params.translateCode -}}
+{{- $href := partial "helper/translate-url" (dict "URL" $post.Permalink "From" $from "To" $to) -}}
+{{- $image := partialCached "helper/image" (dict "Context" $post "Type" "articleList") $post.RelPermalink "articleList" -}}
+
+<article class="is-untranslated {{ if $image.exists }}has-image{{ end }}">
+    <header class="article-header">
+        {{ if $image.exists }}
+            <div class="article-image">
+                <a href="{{ $href }}" rel="nofollow">
+                    {{ if $image.resource }}
+                        {{- $thumbnail := $image.resource.Resize "800x" -}}
+                        <img src="{{ $thumbnail.RelPermalink }}" width="{{ $thumbnail.Width }}" height="{{ $thumbnail.Height }}" loading="lazy" alt="{{ $post.Title }}" />
+                    {{ else }}
+                        <img src="{{ $image.permalink }}" loading="lazy" alt="{{ $post.Title }}" />
+                    {{ end }}
+                </a>
+            </div>
+        {{ end }}
+
+        <div class="article-details">
+            <span class="article-lang-badge" lang="{{ .Site.Language.Lang }}">
+                {{ partial "helper/icon" "language" }}
+                {{ T "language.untranslatedBadge" }}
+            </span>
+
+            <div class="article-title-wrapper" lang="{{ $post.Lang }}">
+                <h2 class="article-title">
+                    <a href="{{ $href }}" rel="nofollow">{{- $post.Title -}}</a>
+                </h2>
+                {{ with $post.Params.description }}
+                    <h3 class="article-subtitle">{{ . }}</h3>
+                {{ end }}
+            </div>
+
+            {{ if not $post.Date.IsZero }}
+            <footer class="article-time">
+                <div>
+                    {{ partial "helper/icon" "date" }}
+                    <time datetime="{{ $post.Date.Format "2006-01-02" }}">
+                        {{- time.Format (or .Site.Params.dateFormat.published "Jan 02, 2006") $post.Date -}}
+                    </time>
+                </div>
+                <div>
+                    {{ partial "helper/icon" "clock" }}
+                    <time>{{ T "article.readingTime" $post.ReadingTime }}</time>
+                </div>
+            </footer>
+            {{ end }}
+        </div>
+    </header>
+</article>

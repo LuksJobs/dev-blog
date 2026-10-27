@@ -1,0 +1,42 @@
+{{/*
+    Language switcher.
+    - Languages configured in Hugo: link to the native translation when it exists,
+      otherwise (regular pages) fall back to machine translation.
+    - Languages in params.autoTranslate: always machine translation.
+*/}}
+{{- $page := . -}}
+{{- $current := .Language.Lang -}}
+{{- $from := default $current .Site.Params.translateCode -}}
+
+<nav class="lang-switch" aria-label="{{ T `language.label` }}">
+    {{ partial "helper/icon" "language" }}
+    <ul>
+        {{- range .Sites -}}
+            {{- $lang := .Language.Lang -}}
+            {{- $short := upper (index (split $lang "-") 0) -}}
+            {{- if eq $lang $current -}}
+                <li><span class="lang-switch__item is-current" aria-current="true" title="{{ .Language.LanguageName }}">{{ $short }}</span></li>
+            {{- else -}}
+                {{- $href := "" -}}
+                {{- range $page.Translations -}}
+                    {{- if eq .Lang $lang -}}{{- $href = .Permalink -}}{{- end -}}
+                {{- end -}}
+
+                {{- if $href -}}
+                    <li><a class="lang-switch__item" href="{{ $href }}" hreflang="{{ $lang }}" lang="{{ $lang }}" title="{{ .Language.LanguageName }}">{{ $short }}</a></li>
+                {{- else if $page.IsPage -}}
+                    {{- $to := default $lang .Params.translateCode -}}
+                    {{- $auto := partial "helper/translate-url" (dict "URL" $page.Permalink "From" $from "To" $to) -}}
+                    <li><a class="lang-switch__item is-auto" href="{{ $auto }}" rel="nofollow" lang="{{ $lang }}" title="{{ .Language.LanguageName }} ({{ T `language.auto` }})">{{ $short }}</a></li>
+                {{- else -}}
+                    <li><a class="lang-switch__item" href="{{ .Home.Permalink }}" hreflang="{{ $lang }}" lang="{{ $lang }}" title="{{ .Language.LanguageName }}">{{ $short }}</a></li>
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+
+        {{- range .Site.Params.autoTranslate -}}
+            {{- $auto := partial "helper/translate-url" (dict "URL" $page.Permalink "From" $from "To" .code) -}}
+            <li><a class="lang-switch__item is-auto" href="{{ $auto }}" rel="nofollow" lang="{{ .code }}" title="{{ .label }} ({{ T `language.auto` }})">{{ upper .code }}</a></li>
+        {{- end -}}
+    </ul>
+</nav>

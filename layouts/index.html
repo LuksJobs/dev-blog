@@ -1,12 +1,15 @@
 {{ define "main" }}
-    {{ $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections }}
-    {{ $notHidden := where .Site.RegularPages "Params.hidden" "!=" true }}
-    {{ $filtered := ($pages | intersect $notHidden) }}
-    {{ $pag := .Paginate ($filtered) }}
+    {{/* Same collection as partials/data/title.html, which builds the paginator first */}}
+    {{ $pag := .Paginate (partial "helper/home-pages" .) }}
+    {{ $lang := .Language.Lang }}
 
     <section class="article-list">
         {{ range $index, $element := $pag.Pages }}
-            {{ partial "article-list/default" . }}
+            {{ if eq .Lang $lang }}
+                {{ partial "article-list/default" . }}
+            {{ else }}
+                {{ partial "article-list/untranslated" (dict "Page" . "Site" $.Site) }}
+            {{ end }}
         {{ end }}
     </section>
 

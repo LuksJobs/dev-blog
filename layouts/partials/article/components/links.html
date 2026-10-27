@@ -1,26 +1,47 @@
-<div class="article-list--compact links">
-    {{ range $i, $link := .Params.links }}
-        <article>
-            <a href="{{ $link.website }}" target="_blank" rel="noopener">
-                <div class="article-details">
-                    <h2 class="article-title">
-                        {{- $link.title -}}
-                    </h2>
-                    <footer class="article-time">
-                        {{ with $link.description }}
-                            {{ . }}
+{{/*
+    Links page. params.links accepts groups:
+        links:
+          - group: Name
+            items:
+              - { title, description, website, icon, handle, image }
+    or a flat list of items (original theme format).
+    "icon" is a file name from assets/icons; site-relative URLs ("/index.xml") follow the current language.
+*/}}
+{{- $groups := slice -}}
+{{- range .Params.links -}}
+    {{- if .items -}}
+        {{- $groups = $groups | append . -}}
+    {{- else -}}
+        {{- $groups = $groups | append (dict "items" (slice .)) -}}
+    {{- end -}}
+{{- end -}}
+
+<div class="links-page">
+    {{ range $groups }}
+    <section class="links-group">
+        {{ with .group }}<h2 class="section-title links-group__title">{{ . }}</h2>{{ end }}
+        <div class="links-grid">
+            {{ range .items }}
+                {{ $href := .website }}
+                {{ $external := strings.HasPrefix $href "http" }}
+                {{ if strings.HasPrefix $href "/" }}{{ $href = relLangURL (strings.TrimPrefix "/" $href) }}{{ end }}
+                <a class="link-card" href="{{ $href }}" {{ if $external }}target="_blank" rel="noopener me"{{ end }}>
+                    <span class="link-card__icon" aria-hidden="true">
+                        {{ with .icon }}
+                            {{ partial "helper/icon" . }}
                         {{ else }}
-                            {{ $link.website }}
+                            {{ with .image }}<img src="{{ . }}" alt="" loading="lazy">{{ else }}{{ partial "helper/icon" "link" }}{{ end }}
                         {{ end }}
-                    </footer>
-                </div>
-        
-                {{ with $link.image }}
-                    <div class="article-image">
-                        <img src="{{ . }}" loading="lazy">
-                    </div>
-                {{ end }}
-            </a>
-        </article>
+                    </span>
+                    <span class="link-card__body">
+                        <span class="link-card__title">{{ .title }}</span>
+                        {{ with .handle }}<span class="link-card__handle">{{ . }}</span>{{ end }}
+                        {{ with .description }}<span class="link-card__desc">{{ . }}</span>{{ end }}
+                    </span>
+                    <span class="link-card__arrow" aria-hidden="true">{{ if $external }}↗{{ else }}→{{ end }}</span>
+                </a>
+            {{ end }}
+        </div>
+    </section>
     {{ end }}
 </div>

@@ -1,30 +1,32 @@
 baseurl: https://example.com
-languageCode: en-us
-theme: hugo-theme-stack
+languageCode: pt-BR
 paginate: 8
 title: Lucas Oliveira
 copyright: Lucas Oliveira Dantas
 
+# Português é o idioma principal (servido na raiz, ex.: /p/slug/).
+# Inglês fica em /en/. Para traduzir um artigo, crie um arquivo
+# "<nome>.en.md" ao lado do original "<nome>.md".
 languages:
-    en:
-        languageName: English
+    pt-br:
+        languageName: Português
+        languageCode: pt-BR
         title: Lucas Oliveira
         weight: 1
         params:
+            description: Primeiro, resolva o problema. Depois, escreva o código.
+            # Código do idioma usado pelo Google Translate
+            translateCode: pt
+            readIn: Ler em português
+    en:
+        languageName: English
+        languageCode: en-US
+        title: Lucas Oliveira
+        weight: 2
+        params:
             description: First, solve the problem. Then, write the code.
-    #zh-cn:
-        #languageName: 中文
-        #title: 演示站点
-        #weight: 2
-        #params:
-            #description: 演示说明
-    #ar:
-        #languageName: عربي
-        #languagedirection: rtl
-        #title: موقع تجريبي
-        #weight: 3
-        #params:
-            #description: وصف تجريبي
+            translateCode: en
+            readIn: Read in English
 
 # Change it to your Disqus shortname before using
 disqusShortname: https-luks-dev-br
@@ -34,7 +36,7 @@ googleAnalytics:
 
 # Theme i18n support
 # Available values: ar, bn, ca, de, el, en, es, fr, hu, id, it, ja, ko, nl, pt-br, th, uk, zh-cn, zh-hk, zh-tw
-DefaultContentLanguage: en
+DefaultContentLanguage: pt-br
 
 # Set hasCJKLanguage to true if DefaultContentLanguage is in [zh-cn ja ko]
 # This will make .Summary and .WordCount behave correctly for CJK languages.
@@ -55,9 +57,30 @@ params:
         since: 2021
         customText:
 
+    # Formatos localizados (ex.: "26 de nov. de 2025" / "Nov 26, 2025")
     dateFormat:
-        published: Jan 02, 2006
-        lastUpdated: Jan 02, 2006 15:04 MST
+        published: ":date_medium"
+        lastUpdated: ":date_medium"
+
+    # Idiomas oferecidos apenas por tradução automática (Google Translate)
+    autoTranslate:
+        - code: es
+          label: Español
+          readIn: Leer en español
+
+    # Na versão em inglês, lista também os artigos ainda não traduzidos
+    # (com link para a tradução automática)
+    showUntranslated: true
+
+    # Carrossel de posts do X exibido abaixo da busca.
+    # Cole o link de cada post (o mais recente primeiro). Texto, mídia e data
+    # são buscados automaticamente no build; posts indisponíveis são ignorados.
+    xFeed:
+        posts:
+            - https://x.com/luksjobs/status/1972500402567602246
+            - https://x.com/luksjobs/status/1863341966374629535
+            - https://x.com/luksjobs/status/1753384053967860141
+            - https://x.com/luksjobs/status/2051437291629941018
 
     sidebar:
         emoji: 🍥

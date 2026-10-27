@@ -13,6 +13,8 @@ import StackColorScheme from 'ts/colorScheme';
 import { setupScrollspy } from 'ts/scrollspy';
 import { setupSmoothAnchors } from "ts/smoothAnchors";
 import setupShare from 'ts/share';
+import setupReadingProgress from 'ts/readingProgress';
+import setupXFeed from 'ts/xFeed';
 
 let Stack = {
     init: () => {
@@ -24,11 +26,15 @@ let Stack = {
         // Share/Repost button (Web Share API with clipboard fallback)
         setupShare();
 
+        // X posts carousel (right sidebar)
+        setupXFeed();
+
         const articleContent = document.querySelector('.article-content') as HTMLElement;
         if (articleContent) {
             new StackGallery(articleContent);
             setupSmoothAnchors();
             setupScrollspy();
+            setupReadingProgress(articleContent);
         }
 
         /**
@@ -67,8 +73,8 @@ let Stack = {
          * Add copy button to code block
         */
         const highlights = document.querySelectorAll('.article-content div.highlight');
-        const copyText = `Copy`,
-            copiedText = `Copied!`;
+        const copyText = articleContent?.dataset.copyLabel || `Copy`,
+            copiedText = articleContent?.dataset.copiedLabel || `Copied!`;
 
         highlights.forEach(highlight => {
             const codeBlock = highlight.querySelector('code[data-lang]') as HTMLElement;

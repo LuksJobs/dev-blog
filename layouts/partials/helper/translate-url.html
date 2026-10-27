@@ -1,0 +1,11 @@
+{{/*
+    Builds a Google Translate proxy URL for a page.
+    Usage: partial "helper/translate-url" (dict "URL" .Permalink "From" "pt" "To" "en")
+
+    The proxy host follows Google's rule: "-" becomes "--" and "." becomes "-",
+    e.g. luks.dev.br -> luks-dev-br.translate.goog
+*/}}
+{{- $u := urls.Parse .URL -}}
+{{- $host := replace (replace $u.Host "-" "--") "." "-" -}}
+{{- $query := printf "_x_tr_sl=%s&_x_tr_tl=%s&_x_tr_hl=%s&_x_tr_pto=wapp" .From .To .To -}}
+{{- return printf "https://%s.translate.goog%s?%s" $host $u.Path $query -}}
