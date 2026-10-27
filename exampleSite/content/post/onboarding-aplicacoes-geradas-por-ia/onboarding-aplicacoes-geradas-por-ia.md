@@ -1,6 +1,6 @@
 ---
 title: "Onboarding de aplicações geradas por IA: o custo real para DevSecOps"
-description: "Por que apps quase inteiramente geradas por IA elevam dívida técnica, risco e custo operacional para equipes DevSecOps, e o que a pesquisa sobre agentes de IA diz sobre isso."
+description: "Um olhar de quem recebe, no time de plataforma, aplicações quase inteiramente geradas por IA, tendo como base o survey AI Agent Systems (Xu, 2026, arXiv:2601.01743)."
 date: 2026-07-13
 draft: false
 tags:
@@ -22,173 +22,110 @@ image: "https://i.imgur.com/bhslPRc.jpeg"
 toc: true
 ---
 
-**Resumo:** quando uma aplicação é produzida quase inteiramente por IA, mas sem base sólida de engenharia de software, o onboarding para produção deixa de ser um exercício de automação e passa a ser um trabalho de contenção de risco. O problema não é a IA. O problema é usar IA para amplificar decisões ruins, ausência de arquitetura e desconhecimento operacional. A própria pesquisa sobre agentes de IA chega a uma conclusão parecida: confiabilidade e governança são propriedades do sistema inteiro, não do modelo.
+Quando uma aplicação é escrita quase toda por IA, por um time que não tem base sólida de engenharia de software, colocá-la em produção deixa de ser uma questão de pipeline e vira um trabalho de contenção de risco. Este texto é sobre isso: o que chega para o time de DevSecOps, por que chega desse jeito e o que dá para fazer antes.
 
 <!--more-->
 
-## Introdução
+> **Sobre a base deste artigo.** O texto parte da minha experiência no dia a dia, mas a espinha dorsal teórica vem do survey [*AI Agent Systems: Architectures, Applications, and Evaluation*](https://arxiv.org/html/2601.01743v1), de Bin Xu (Arizona State University, arXiv:2601.01743, 2026). Sempre que eu citar "o survey" ou "Xu (2026)" ao longo do texto, é dele que estou falando. As ideias de verificação, avaliação, autonomia proporcional ao risco e contratos de ferramenta que aparecem aqui foram tiradas desse trabalho e adaptadas para a realidade de quem opera software em produção.
 
-Nos últimos anos, o desenvolvimento assistido por IA saiu do campo da curiosidade e entrou de vez no ciclo normal de entrega de software. Em muitos times, já é comum ver geração de código, criação de testes, sugestão de refatorações, montagem de infraestrutura e até escrita inicial de documentação com apoio de ferramentas de IA.
+## Por que escrevi isso
 
-E a mudança não parou no autocomplete. Hoje boa parte desse código é escrita por **agentes**: sistemas que, segundo o survey de Bin Xu (2026), combinam modelos de fundação com raciocínio, planejamento, memória e uso de ferramentas. Na prática, um agente de código lê o repositório, edita arquivos, roda comandos, instala dependências e gera manifests, tudo em um loop que pode rodar por muitos passos sem um humano olhando cada decisão.
+Desenvolvimento assistido por IA já faz parte da rotina de quase todo time. Geração de código, testes, refatoração, manifests, Terraform, documentação: tudo isso passa por alguma ferramenta de IA hoje em dia. E eu não tenho nada contra. Uso bastante, inclusive.
 
-Isso, por si só, não é um problema. Na prática, IA é um acelerador de produtividade. Ela reduz atrito, encurta o caminho entre intenção e implementação e ajuda times experientes a ganhar escala. O ponto crítico aparece quando a velocidade da geração passa a ser confundida com maturidade de engenharia.
+O que mudou recentemente é que boa parte desse código não vem mais de um autocomplete, e sim de **agentes**. Xu (2026) define agentes como sistemas que juntam um modelo de fundação com raciocínio, planejamento, memória e uso de ferramentas. Traduzindo: o agente lê o repositório, edita arquivo, roda comando, instala dependência e gera manifest, tudo num loop que pode dar dezenas de voltas sem ninguém olhando cada passo.
 
-É nesse cenário que a equipe em que atuo, junto com outras equipes de DevSecOps, Platform Engineering e SRE, começa a receber aplicações que "funcionam" no ambiente local, mas chegam completamente frágeis para produção. Na prática, isso aumenta o volume de trabalho porque o que deveria ser uma entrada simples para o pipeline vira uma análise cuidadosa de arquitetura, operação, segurança e observabilidade. Em vez de um sistema projetado com critérios claros, chega um conjunto de arquivos que parece software, mas se comporta como protótipo permanente.
+Em time experiente, isso é ganho de escala de verdade. O problema começa quando a velocidade de geração passa a ser tratada como se fosse maturidade de engenharia.
 
-Minha posição é direta: o problema não é a IA. O problema é usar IA sem compreender os fundamentos que continuam sustentando software sério em ambiente corporativo.
+No time em que atuo, e conversando com colegas de Platform Engineering e SRE de outras empresas, a história se repete: chega uma aplicação que "funciona" localmente e que, olhando com um pouco de cuidado, está longe de aguentar produção. O que deveria ser uma entrada simples no pipeline vira análise de arquitetura, de operação, de segurança e de observabilidade. Chega um conjunto de arquivos com cara de software e comportamento de protótipo.
 
-## Contextualização: o crescimento do desenvolvimento assistido por IA
+Deixo minha posição clara logo de início: não estou culpando a IA. Estou falando de usar IA sem entender os fundamentos que continuam sustentando qualquer software sério.
 
-Ferramentas de IA mudaram o ritmo de desenvolvimento. Elas ajudam a escrever boilerplate, gerar endpoints, criar consultas, montar pipelines e até propor arquitetura inicial. Em times maduros, isso vira ganho real. Em times sem base técnica, isso vira dívida operacional acelerada.
+## O que o survey de Xu (2026) diz sobre isso
 
-O risco não está apenas em "código ruim". O risco está em código que foi produzido rápido demais, com pouca revisão conceitual, sem trade-offs explícitos e sem a disciplina que normalmente existiria em uma equipe de engenharia experiente.
+Quando li o survey pela primeira vez, a sensação foi de que alguém tinha escrito, com linguagem acadêmica, o que a gente sente operando essas aplicações. O trabalho não é sobre DevSecOps. É uma revisão ampla de como agentes de IA são construídos, treinados e avaliados. Mas três pontos dele caem como uma luva no nosso problema.
 
-Quando uma equipe sem domínio de arquitetura, system design e engenharia de software usa IA como substituto de pensamento crítico, o resultado costuma ser previsível:
+O primeiro está na parte sobre agentes de código e manutenção de software. O autor diz que as tarefas reais de software são longas, dependem de muitas ferramentas e que as falhas costumam ser **sutis e tardias**: regressões de segurança, comportamento que muda escondido atrás de feature flag, defeitos que só aparecem em teste de integração ou sob carga parecida com a de produção. Ou seja, o erro não aparece na máquina de quem gerou o código. Aparece quando a aplicação chega pra gente.
 
-- decisões inconsistentes de arquitetura;
-- ausência de fronteiras entre domínios;
-- dependências acopladas e difíceis de versionar;
-- pouca ou nenhuma atenção a observabilidade;
-- segurança tratada como etapa final;
-- deploy pensado depois do código pronto.
+O segundo vem logo em seguida: *"plausible patches are not enough"*. Um patch plausível não basta, é preciso correção de ponta a ponta e o mínimo de regressão. Uma API que compila e responde na porta 3000 é exatamente isso, um patch plausível.
 
-Em termos práticos, a IA não cria esses problemas do nada. Ela torna mais barato produzir o erro. E quando o erro é barato, ele se propaga rápido.
+O terceiro está na conclusão, e é talvez a frase que mais resume este artigo: *"reliability and governance are properties of the full stack"*. Confiabilidade e governança são propriedades da stack inteira, não do modelo. Não adianta usar o modelo mais caro do mercado se não existe revisão, teste, pipeline, observabilidade e controle de permissão em volta dele.
 
-> **Ponto-chave:** a IA amplia capacidade. Ela também amplia defeitos de processo, falta de conhecimento e atalhos arquiteturais.
+O survey fecha falando da distância entre demonstrações impressionantes e implantação robusta no mundo real. Pra quem trabalha com plataforma, essa distância tem nome: backlog.
 
-### O que a pesquisa sobre agentes de IA diz
+## "Funciona" não é critério de pronto
 
-O que vemos no dia a dia de plataforma não é só impressão de quem opera. O survey *AI Agent Systems: Architectures, Applications, and Evaluation* (Xu, 2026), que revisa o estado da arte de agentes baseados em LLM, descreve exatamente o tipo de risco que chega no onboarding. Três pontos do trabalho conversam diretamente com este artigo.
+Uma parte do survey que eu gosto muito é a de avaliação. O autor argumenta que medir agente só pela taxa de sucesso é pouco, e propõe olhar várias dimensões ao mesmo tempo: desempenho fim a fim, custo e latência, se as ferramentas foram usadas corretamente, robustez sob perturbação, segurança ao longo da execução. Tem até uma observação ótima de que agentes podem "resolver" tarefas sendo lentos ou caros demais para uso real.
 
-**1. As falhas são sutis e aparecem tarde.** Ao discutir agentes de código e manutenção de software, o autor observa que tarefas reais de software são longas e dependem de muitas ferramentas, e que as falhas costumam ser sutis e tardias: regressões de segurança, mudanças de comportamento escondidas atrás de feature flags, problemas que só aparecem em testes de integração ou sob carga parecida com a de produção. Ou seja: o defeito não aparece no ambiente local do desenvolvedor. Ele aparece justamente no momento em que a aplicação chega para a equipe de plataforma.
+Trocando "agente" por "aplicação", vira um checklist de onboarding. "Funciona" é a taxa de sucesso. O resto é o que a gente precisa perguntar:
 
-**2. Um patch plausível não basta.** O texto é explícito: *"plausible patches are not enough"*. É preciso correção de ponta a ponta e o mínimo de regressões. Código que compila e responde na porta 3000 é um patch plausível. Não é software pronto para produção.
+- Funciona num ambiente parecido com produção, ou só no localhost?
+- Qual a latência p95 e quanto de CPU e memória ela consome sob carga de verdade?
+- As integrações com banco, fila e APIs externas tratam timeout, erro e retry?
+- O que acontece quando uma dependência fica instável, o pod reinicia ou o tráfego dobra?
+- Tem segredo exposto, dado vazando ou ação sem autorização em algum ponto do fluxo?
+- Se der incidente amanhã, dá para reconstruir o que aconteceu com os logs, métricas e traces que existem?
 
-**3. Confiabilidade é propriedade da stack inteira.** Na conclusão, o autor afirma que *"reliability and governance are properties of the full stack"*, e não apenas do modelo base. Traduzindo para a nossa realidade: não adianta usar o modelo mais avançado do mercado se o processo em volta dele (revisão, testes, pipeline, observabilidade, controle de permissões) não existe.
+Xu (2026) insiste que a segurança tem que ser avaliada ao longo de toda a trajetória de execução, e não só na resposta final. Pra aplicação vale igual: o `200 OK` no fim da requisição não diz nada sobre o que aconteceu no caminho.
 
-O survey também fala da distância entre "demonstrações impressionantes" e "implantação robusta no mundo real". Essa distância é, literalmente, o trabalho que cai no colo de DevSecOps.
+## O que costuma chegar
 
-## "Funciona" é uma métrica insuficiente
+Raramente o onboarding de uma aplicação gerada quase toda por IA começa com uma arquitetura limpa e um plano de operação. O que chega é um monte de sinais de que o software foi construído em cima da pergunta "como faço isso funcionar?", e nunca da pergunta "como isso sobrevive em produção?".
 
-Uma das contribuições mais úteis do survey é sobre avaliação. O autor argumenta que um único número de sucesso não descreve bem um agente, e que a avaliação precisa cobrir várias dimensões ao mesmo tempo: desempenho fim a fim, eficiência e custo, correção no uso de ferramentas, qualidade da trajetória, robustez e segurança. Ele chega a observar que *"agents can 'solve' tasks while being impractically slow or expensive"*.
+Os mais comuns, pela minha experiência:
 
-O paralelo com o onboarding é direto. "A aplicação funciona" é o equivalente a reportar só a taxa de sucesso. Para produção, as outras dimensões importam tanto quanto essa:
+- **Repositório sem estrutura definida.** Só pra entender o fluxo e onde estão os pontos de falha já vai um bom tempo.
+- **Teste inexistente ou superficial.** Sem isso não tem CI confiável, nem rollback seguro.
+- **Teste gerado só pra passar.** Esse é pior que o anterior, porque dá falsa sensação de segurança. Cobertura alta, assert fraco.
+- **Dockerfile improvisado.** Imagem enorme, lenta, difícil de auditar.
+- **Configuração e segredo no meio do código.**
+- **Manifest de Kubernetes genérico,** sem probe, sem resource, sem estratégia de rollout.
+- **Log em texto solto,** impossível de correlacionar.
+- **Dependência desatualizada, ou que ninguém sabe de onde veio.**
+- **Nenhum registro de como o código foi gerado.** Não dá pra saber o que foi decisão do agente e o que alguém de fato revisou.
 
-| Dimensão de avaliação (Xu, 2026) | Pergunta equivalente no onboarding |
-|---|---|
-| Desempenho fim a fim | A aplicação entrega o comportamento esperado em um ambiente parecido com produção, e não só no localhost? |
-| Eficiência e custo | Qual a latência p95, o consumo de CPU e memória e o custo por requisição sob carga real? |
-| Correção no uso de ferramentas | As integrações (banco, filas, APIs externas) tratam erro, timeout e retry corretamente? |
-| Robustez e confiabilidade | O que acontece com uma dependência instável, um restart do pod ou um pico de tráfego? |
-| Segurança e conformidade | Há vazamento de dados, segredos expostos ou ações sem autorização ao longo de todo o fluxo? |
-| Rastreabilidade | Existem logs, métricas e traces suficientes para reconstruir o que aconteceu em um incidente? |
+Muitas vezes, o primeiro trabalho não é fazer deploy. É descobrir se aquilo pode virar algo operável sem reescrever do zero.
 
-O survey insiste que a segurança precisa ser avaliada ao longo de toda a trajetória de execução, e não apenas na resposta final. Vale o mesmo para aplicações: não basta o endpoint devolver `200 OK`. O que importa é tudo o que aconteceu no caminho até ali.
+## Arquitetura
 
-## O que normalmente chega para uma equipe DevSecOps
+O primeiro problema quase sempre é arquitetural. Aplicação gerada sem direção tende a seguir o caminho de menor resistência: um monólito grande, regra de negócio misturada com tudo, sem fronteira de domínio.
 
-Na rotina, o onboarding de uma aplicação gerada quase toda por IA raramente começa com uma arquitetura limpa e um plano de operação. O que chega costuma ser uma coleção de sinais de que o software foi construído a partir da pergunta "como faz funcionar?" e não da pergunta "como isso vai sobreviver em produção?".
+O survey ajuda a entender por quê. Xu (2026) descreve o funcionamento de um agente como um ciclo: observa, busca contexto, propõe uma ação, valida, executa e atualiza a memória. Se ninguém dá uma arquitetura-alvo como contexto, cada volta desse ciclo resolve o problema da vez do jeito mais direto possível. O sistema final é montado por acúmulo, não por desenho. E o autor lembra que, em tarefas longas, os erros se acumulam (*compounding errors*): uma decisão ruim no passo 3 vira premissa para tudo que vem depois.
 
-| O que chega | O que isso significa para DevSecOps |
-|---|---|
-| Repositório sem padrão de estrutura | Alto custo para entender fluxo, dependências e pontos de falha |
-| Testes inexistentes ou superficiais | Sem base para CI confiável, rollback seguro ou mudança controlada |
-| Testes gerados só para "passar" | Falsa sensação de cobertura; asserts fracos que não detectam regressão |
-| Dockerfile improvisado | Imagens grandes, lentas e difíceis de auditar |
-| Configuração espalhada no código | Segredos, parâmetros e ambientes ficam frágeis e inseguros |
-| Manifests Kubernetes genéricos | Falta de health checks, recursos e estratégia de rollout |
-| Logs em texto solto | Observabilidade limitada e difícil correlação em incidentes |
-| Dependências desatualizadas ou desconhecidas | Aumento direto de risco de supply chain e SCA |
-| Nenhum registro de como o código foi gerado | Impossível saber quais decisões foram tomadas pelo agente e quais foram revisadas por alguém |
+Vale dizer: monólito não é problema por si só. O problema é o monólito sem modularização nenhuma, onde autenticação, regra de negócio, persistência, integração e apresentação vivem no mesmo fluxo. Aí qualquer mudança pequena quebra algo que parecia não ter relação nenhuma. É comum ver um único serviço que recebe a requisição, valida, consulta o banco, chama API externa, monta a resposta, grava auditoria e ainda implementa retry na mão. Função gigante, opaca e frágil.
 
-Em muitos casos, o primeiro trabalho da equipe não é "fazer o deploy". É descobrir se o sistema pode ser tornado operável sem reescrita completa.
+SOLID some. Padrões simples que ajudariam muito (Repository, Adapter, Strategy, Circuit Breaker, Outbox, Bulkhead) não aparecem. E não falo isso por apego a pattern, mas porque sem essa linguagem estrutural o sistema não tem como crescer de forma organizada.
 
-## Principais problemas encontrados
+Duplicação de código também é frequente. Com agente, ela é ainda mais comum, porque o contexto de cada sessão é limitado: o agente não "lembra" que já existe um utilitário igual em outro módulo e escreve outro. Somam-se a isso as dependências circulares, que aparecem porque o código foi organizado por proximidade funcional e não por arquitetura. O build sofre, a refatoração fica cara e o grafo de dependências vira um novelo.
 
-### Arquitetura
+## System design
 
-O primeiro problema costuma ser arquitetural. Aplicações quase totalmente geradas por IA frequentemente seguem o caminho de menor resistência: uma base monolítica gigante, com todas as regras misturadas, sem fronteira de domínio e sem intenção clara de evolução.
+Se a arquitetura mostra a forma do problema, o system design mostra o estrago na operação.
 
-Isso tem uma explicação mecânica. O survey de Xu descreve o funcionamento de um agente como um loop de observar, recuperar contexto, propor uma ação, validar, executar e atualizar a memória. Se ninguém fornece uma arquitetura-alvo como contexto, cada passo do loop otimiza localmente: resolve o problema da vez da forma mais direta possível. O resultado global é um sistema montado por acumulação, não por desenho. O autor também aponta que, em tarefas longas, os erros se acumulam (*compounding errors*): uma decisão ruim no passo 3 vira premissa para os passos 4 a 40.
+Aplicação gerada sem pensamento de sistema costuma assumir carga constante, latência estável e dependências sempre disponíveis. Nada disso existe em produção. Os pontos que mais vejo:
 
-#### Monólitos gigantes e acoplamento excessivo
+**Estado em memória e sessão local.** Funciona até o primeiro restart, reschedule ou scale-out. Depois disso, usuário deslogado e dado perdido.
 
-Monólito não é sinônimo de problema. O problema é um monólito sem modularização real, em que auth, negócio, persistência, integrações, validação e apresentação se misturam no mesmo fluxo. Nessa situação, qualquer mudança pequena afeta partes aparentemente desconectadas.
+**Nenhum cache.** Toda leitura vai direto ao banco, que vira ponto único de verdade e de gargalo. A gente acaba olhando métrica de pool de conexão e saturação sem ter nenhuma camada intermediária pra aliviar.
 
-O acoplamento excessivo aparece quando o código depende de detalhes internos de outras camadas, de formatos específicos de payload e de efeitos colaterais espalhados. O resultado é um sistema difícil de testar, difícil de evoluir e ainda mais difícil de isolar em incidentes.
+**Tudo síncrono.** Uma chamada depende da outra, que depende de uma terceira. A latência se soma, o timeout aparece e uma falha derruba a cadeia inteira. Fila resolveria boa parte disso, mas não tem.
 
-#### Ausência de separação de responsabilidades
+**Sem idempotência, sem tolerância a falha.** Sem idempotência, retry vira risco de operação duplicada. Sem tolerância a falha, uma API externa fora do ar derruba o fluxo todo.
 
-Quando uma IA gera código sem direcionamento arquitetural, é comum ver serviços que fazem tudo: recebem requisição, validam regra, consultam banco, chamam APIs externas, montam resposta, registram auditoria e ainda lidam com tentativa de retry. Isso mata a separação de responsabilidades e cria funções enormes, opacas e frágeis.
+Um sistema bom não é o que nunca falha. É o que falha de um jeito previsível, que dá pra detectar e do qual dá pra se recuperar.
 
-#### Violação de SOLID e falta de patterns
+## Cloud e Kubernetes
 
-Em ambientes assim, princípios como Single Responsibility, Open/Closed e Dependency Inversion praticamente desaparecem. A IA pode produzir algo "bonito" na superfície, mas isso não significa que exista um desenho sustentável.
+Aqui é onde o onboarding dói de verdade. Muita aplicação gerada por IA foi pensada para rodar, não para ser operada num orquestrador. É bem o cenário descrito no survey: problemas que só aparecem sob carga parecida com a de produção.
 
-Também é comum a ausência de padrões simples e úteis: Factory, Strategy, Adapter, Repository, Circuit Breaker, Outbox, Queue Consumer, Bulkhead. Não se trata de aplicar pattern por fetiche. Trata-se de criar linguagem estrutural para lidar com crescimento e mudança.
+Kubernetes pressupõe um contrato mínimo com a aplicação. Ela precisa dizer quando está viva, quando está pronta pra receber tráfego, como encerra e como lida com estado. Se o código não oferece isso, a plataforma vira uma camada de compensação.
 
-#### Código duplicado e dependências circulares
+Sem `readinessProbe`, o tráfego chega antes da aplicação estar pronta. Sem `livenessProbe`, um processo travado fica lá ocupando o pod. Sem `startupProbe`, aplicação que demora pra subir é morta antes de terminar de iniciar. E tem um clássico do código gerado: o `/health` que retorna `200` sempre, sem checar nada. Ele satisfaz o manifest e não informa coisa nenhuma ao cluster.
 
-Duplicação surge quando a aplicação foi criada com pressa e sem visão de domínio. Pequenas variações de regra são copiadas para outras áreas. Isso gera manutenção cara e inconsistência funcional. Com agentes, o efeito é ainda mais forte: como o contexto de cada sessão é limitado, é comum o agente reescrever um utilitário que já existia em outro módulo, em vez de reutilizá-lo.
+Graceful shutdown é outro ponto. Muita aplicação ignora o `SIGTERM`: não fecha conexão, não drena requisição, não termina a transação. Em todo rollout, alguém perde uma requisição.
 
-Dependências circulares são outro sinal clássico. Em código gerado, elas aparecem com frequência porque o sistema foi montado por proximidade funcional, não por arquitetura. Isso bagunça build, dificulta refatoração e torna o grafo de dependências incontrolável.
+Escalar horizontalmente também não é só aumentar réplica. Se o estado está em memória, o autoscaling quebra a experiência do usuário. E sem `requests` e `limits` o scheduler trabalha no escuro, o HPA escala no momento errado e ninguém entende por quê.
 
-### System Design
-
-Se a arquitetura mostra a forma do problema, o system design mostra seu impacto operacional.
-
-#### Não existe estratégia de escalabilidade
-
-Aplicações geradas sem pensamento de sistema costumam assumir carga fixa, latência constante e crescimento linear. Isso não existe em produção real. Picos acontecem. Dependências externas falham. Filas acumulam. O fluxo precisa ser tolerante ao imprevisível.
-
-#### Estado em memória e sessões locais
-
-Guardar estado em memória é um atalho comum. Funciona até o primeiro restart, reschedule ou scaling horizontal. Quando a sessão vive localmente, qualquer tentativa de replicação vira problema.
-
-#### Cache inexistente e banco como gargalo
-
-Sem cache, toda leitura pesa diretamente no banco. Quando o banco vira ponto único de verdade e de gargalo, a aplicação deixa de escalar com elegância. A equipe de DevSecOps passa a olhar para métricas de conexão, pool, saturação e tempo de resposta sem encontrar camadas intermediárias que aliviem a pressão.
-
-#### Ausência de filas e APIs síncronas para tudo
-
-Muita aplicação IA-first tenta resolver tudo com chamadas síncronas em cadeia. Isso acopla latência, aumenta chance de timeout e cria cascatas de falha. Em vez de desacoplar processamento, o sistema empurra cada operação para o caminho mais frágil.
-
-#### Falta de idempotência, tolerância a falhas e alta disponibilidade
-
-Quando não existe idempotência, retry vira risco. Quando não existe tolerância a falhas, uma dependência externa derruba o fluxo inteiro. Quando não existe estratégia de alta disponibilidade, qualquer indisponibilidade vira incidente operacional e, às vezes, indisponibilidade de negócio.
-
-> **Observação:** sistema bom não é o que nunca falha. É o que falha de forma previsível, detectável e recuperável.
-
-### Cloud e Kubernetes
-
-É aqui que o onboarding começa a doer para valer. Muitas aplicações geradas por IA foram desenhadas para "rodar", não para serem operadas em orquestradores modernos. É exatamente o cenário que o survey descreve: problemas que só aparecem sob cargas parecidas com as de produção.
-
-#### Por que são difíceis de colocar em Kubernetes
-
-Kubernetes pressupõe contratos operacionais mínimos. A aplicação precisa sinalizar quando está viva, quando está pronta, como encerra, como escala e como lida com estado.
-
-Se isso não existe no código, a plataforma vira uma camada de compensação, não de habilitação.
-
-#### Health checks, readiness e liveness
-
-Sem `readinessProbe`, o tráfego pode chegar antes da aplicação estar pronta. Sem `livenessProbe`, processos travados continuam presos no pod. Sem `startupProbe`, aplicações com inicialização lenta são reiniciadas antes de subir. Sem uma resposta coerente desses checks, o cluster não toma decisões corretas.
-
-Um erro comum em código gerado é o endpoint `/health` que sempre retorna `200`, sem verificar nada. Ele satisfaz o manifest, mas não informa nada ao cluster.
-
-#### Graceful shutdown
-
-Muitas aplicações não fecham conexões, não drenam requests e não preservam integridade ao receber `SIGTERM`. Em rollout, isso vira request perdido, fila corrompida ou transação interrompida.
-
-#### Horizontal scaling, requests e limits
-
-Escalar horizontalmente não é apenas aumentar réplicas. A aplicação precisa ser stateless o suficiente para suportar isso. Se o estado está em memória, o autoscaling quebra a experiência do usuário.
-
-Sem `requests` e `limits`, o scheduler trabalha no escuro. Sem ajuste de CPU e memória, HPA e VPA ficam imprecisos. Sem observação do comportamento sob carga, a plataforma escala no lugar errado.
-
-#### Persistent storage, ConfigMaps, Secrets e service discovery
-
-Se a aplicação mistura configuração com código, o deploy vira intervenção manual. Se usa storage persistente sem necessidade, complica resiliência e expansão. Se não conversa bem com service discovery, o ambiente deixa de ser dinâmico e passa a depender de suposições frágeis.
+Por fim, configuração misturada com código transforma deploy em intervenção manual, e storage persistente usado sem necessidade complica qualquer tentativa de resiliência.
 
 ```mermaid
 flowchart TD
@@ -200,25 +137,17 @@ flowchart TD
     F --> G[Incidentes, retrabalho e hotfix]
 ```
 
-### DevSecOps
+## DevSecOps
 
-Do ponto de vista de DevSecOps, o problema mais caro não é apenas encontrar vulnerabilidades. É não ter base suficiente para automatizar controle de qualidade de forma confiável.
+Do lado de DevSecOps, o mais caro nem é achar vulnerabilidade. É não ter base nenhuma para automatizar o controle de qualidade.
 
-#### Quando não existe padrão
+Sem padrão de branch, estrutura e build, cada aplicação pede um pipeline praticamente artesanal. Sem teste, o pipeline deixa de ser mecanismo de confiança. CI não existe pra "passar", existe pra provar que a mudança não quebrou o que já funcionava.
 
-Sem padrão de branch, estrutura, dependências e build, cada aplicação exige uma pipeline quase artesanal. Isso aumenta o lead time e reduz a chance de manutenção sustentável.
+E tem uma armadilha bem específica de código gerado: quando o mesmo agente escreve o código e o teste, o teste confirma o que o código faz, não o que ele deveria fazer. Por isso Xu (2026), ao falar de agentes de engenharia de software, diz que é essencial reportar a validade do patch e o comportamento de regressão, e não só se a tarefa passou. Cobertura alta com assert fraco me preocupa mais do que cobertura baixa honesta.
 
-#### Quando não há testes nem cobertura
+### Dockerfile
 
-Sem testes, a pipeline perde força como mecanismo de confiança. Sem cobertura mínima, qualquer ajuste vira aposta. Em equipes maduras, CI não serve só para "passar". Serve para provar que a mudança não quebrou o comportamento esperado.
-
-Aqui existe uma armadilha específica de código gerado: quando o mesmo agente escreve o código e os testes, os testes tendem a confirmar o que o código faz, e não o que ele deveria fazer. Cobertura alta com asserts fracos é pior do que cobertura baixa honesta, porque dá falsa confiança. Por isso o survey de Xu, ao falar de agentes de engenharia de software, destaca que é essencial reportar a validade do patch e o comportamento de regressão, e não apenas se a tarefa "passou".
-
-#### Build lento, imagens grandes e Dockerfiles ruins
-
-Build lento reduz frequência de feedback. Imagem grande aumenta custo de download, expansão e patching. Dockerfile ruim costuma ser sintoma de uma aplicação que foi empacotada sem foco em previsibilidade.
-
-**Dockerfile ruim**
+Build lento reduz feedback. Imagem grande custa mais pra baixar, escalar e corrigir. Normalmente o Dockerfile que chega é algo assim:
 
 ```dockerfile
 FROM node:18
@@ -229,7 +158,7 @@ EXPOSE 3000
 CMD ["npm", "start"]
 ```
 
-**Dockerfile otimizado**
+E uma versão razoável seria:
 
 ```dockerfile
 FROM node:20-alpine AS deps
@@ -247,40 +176,39 @@ EXPOSE 3000
 CMD ["node", "server.js"]
 ```
 
-Junto com ele, um `.dockerignore` contendo pelo menos `node_modules`, `.git`, `.env*` e artefatos de teste. Sem isso, o `COPY . .` sobrescreve as dependências do estágio anterior e ainda pode levar segredos locais para dentro da imagem.
+Não esqueça do `.dockerignore`, com pelo menos `node_modules`, `.git`, `.env*` e artefatos de teste. Sem ele, o `COPY . .` sobrescreve as dependências do estágio anterior e ainda pode levar segredo local pra dentro da imagem.
 
-#### Segredos versionados e credenciais hardcoded
+### Segredos no código
 
-Este é um dos sinais mais perigosos. Quando segredos aparecem em código, a equipe de DevSecOps herda um problema que já se espalhou: rotação, revogação, auditoria e risco de exposição.
+É um dos sinais mais perigosos. Quando aparece segredo no repositório, o problema já se espalhou: tem que rotacionar, revogar, auditar e torcer pra não ter vazado.
 
-Com agentes, o problema ganha uma camada a mais: a sessão do agente costuma ter acesso ao `.env` local, ao histórico do shell e às credenciais do desenvolvedor. Se nada impede, essas informações acabam copiadas em arquivos de configuração, exemplos de código ou mensagens de commit.
+Com agente, isso piora. A sessão do agente normalmente tem acesso ao `.env` local, ao histórico do shell e às credenciais de quem está rodando. Se nada impedir, essas informações vão parar em arquivo de configuração, exemplo de código ou até em mensagem de commit.
 
-#### O próprio agente como superfície de ataque
+### O agente também é superfície de ataque
 
-Esse é um ponto que costuma ficar fora da conversa, e o survey de Xu ajuda a trazê-lo para dentro. Um agente de código não é só um gerador de texto: ele executa comandos, instala pacotes e altera arquivos. Isso o torna parte da cadeia de suprimentos do software.
+Esse ponto quase nunca entra na conversa, e foi lendo o survey que eu passei a olhar pra ele com mais atenção. Um agente de código executa comando, instala pacote e altera arquivo. Ele faz parte da cadeia de suprimentos do software, quer a gente goste ou não.
 
-O trabalho destaca alguns riscos que valem para qualquer time que deixa agentes trabalharem em repositórios corporativos:
+Xu (2026) levanta alguns riscos que valem para qualquer empresa que deixa agentes mexerem em repositório:
 
-- **Prompt injection por conteúdo não confiável.** Issues, tickets, documentação externa e READMEs de dependências podem conter instruções que o agente acaba seguindo.
-- **Ações com efeito colateral.** Rodar uma migration, um `terraform apply` ou um `kubectl delete` não tem volta. O survey recomenda *permission gates* para ações irreversíveis.
-- **Memória como superfície de segurança.** Conteúdo envenenado vindo de uma ferramenta pode persistir entre sessões se o agente mantém memória.
-- **Permissões amplas demais.** O autor defende permissões limitadas por papel (*least privilege*), allowlists de ferramentas e execução em sandbox, para que a falha de um componente não se espalhe.
+- **Prompt injection.** Conteúdo não confiável (issue, ticket, documentação externa, README de dependência) pode carregar instruções que o agente segue.
+- **Ações sem volta.** Migration, `terraform apply`, `kubectl delete`. O survey recomenda *permission gates*, ou seja, uma aprovação explícita antes de qualquer ação irreversível.
+- **Memória envenenada.** Se o agente mantém memória entre sessões, conteúdo malicioso vindo de uma ferramenta pode persistir.
+- **Permissão demais.** O autor defende permissões limitadas por papel, allowlist de ferramentas e execução em sandbox, para que um erro não se espalhe.
 
-Para DevSecOps, a consequência prática é tratar o agente como mais um ator do pipeline: com identidade própria, token de escopo mínimo, execução isolada e logs auditáveis. Se a equipe não consegue responder "quais comandos o agente executou e com quais credenciais?", o problema de supply chain já começou antes do primeiro build.
+Na prática, eu trato o agente como mais um ator do pipeline: identidade própria, token com escopo mínimo, execução isolada e log auditável. Se o time não consegue responder "quais comandos o agente rodou e com qual credencial?", o problema de supply chain começou antes do primeiro build.
 
-#### SAST, SCA, Secret Scanning, Container Scanning, IaC Scanning, SBOM e Supply Chain Security
+### Ferramentas de segurança no pipeline
 
-Ferramentas de segurança não resolvem arquitetura ruim, mas ajudam a impedir que problemas óbvios passem despercebidos.
+Ferramenta não conserta arquitetura ruim, mas ajuda a não deixar passar o óbvio. O mínimo que costumo colocar:
 
-- **SAST** encontra padrões inseguros no código.
-- **SCA** identifica dependências vulneráveis e desatualizadas. Em código gerado, vale também conferir se cada pacote existe de fato, é o pacote certo e é mantido, já que modelos podem sugerir nomes parecidos com bibliotecas legítimas.
-- **Secret Scanning** detecta chaves, tokens e credenciais expostas.
-- **Container Scanning** avalia vulnerabilidades no sistema base e em pacotes da imagem.
-- **IaC Scanning** encontra problemas em Terraform, Helm, Kubernetes manifests e afins.
-- **SBOM** documenta a composição real do software.
-- **Supply Chain Security** fecha a conversa em torno de proveniência, integridade e confiança.
+- **SAST** para padrões inseguros no código;
+- **SCA** para dependências vulneráveis. Em código gerado, confira também se o pacote existe mesmo e é o certo, porque modelo às vezes sugere nome parecido com biblioteca legítima;
+- **Secret scanning** para chaves e tokens;
+- **Container scanning** para a imagem;
+- **IaC scanning** para Terraform, Helm e manifests;
+- **SBOM** para saber o que de fato está dentro do software.
 
-**Exemplo de pipeline GitLab CI**
+Um exemplo de pipeline no GitLab CI:
 
 ```yaml
 stages:
@@ -331,7 +259,7 @@ trivy_container:
     - trivy image --severity HIGH,CRITICAL --exit-code 1 "$IMAGE"
 ```
 
-**Exemplo de GitHub Actions**
+O equivalente no GitHub Actions:
 
 ```yaml
 name: security-pipeline
@@ -360,9 +288,9 @@ jobs:
           exit-code: 1
 ```
 
-Note o bloco `permissions: contents: read`: o token do workflow recebe só o que precisa. É o mesmo princípio de menor privilégio que vale para o agente.
+Repare no `permissions: contents: read`. O token do workflow recebe só o que precisa. É o mesmo princípio de menor privilégio que vale para o agente.
 
-**Exemplo de SonarQube**
+Se usar SonarQube, o quality gate bloqueando o merge já ajuda bastante:
 
 ```properties
 sonar.projectKey=app-gerada-por-ia
@@ -372,32 +300,20 @@ sonar.javascript.lcov.reportPaths=coverage/lcov.info
 sonar.qualitygate.wait=true
 ```
 
-**Exemplo de Semgrep e Trivy em comandos diretos**
+E pra rodar localmente antes do push:
 
 ```bash
 semgrep scan --config p/security-audit --config p/owasp-top-ten src/
 trivy fs --scanners vuln,secret,misconfig .
 ```
 
-### Observabilidade
+## Observabilidade
 
-Observabilidade não entra depois. Ela deveria nascer junto com a aplicação. Em apps geradas sem maturidade, normalmente há três cenários: logs espalhados, métricas inexistentes ou tracing só no slide da apresentação.
+Observabilidade tem que nascer junto com a aplicação. Nas apps que recebo, geralmente o cenário é log espalhado, métrica inexistente e tracing só no slide da apresentação.
 
-O survey de Xu trata logs de chamadas de ferramentas, artefatos intermediários e traces como **saídas de primeira classe**, necessárias para depuração, conformidade e reprodutibilidade. A lógica vale para qualquer software em produção: se não dá para reconstruir o que aconteceu, não dá para operar.
+O survey trata logs de chamadas de ferramenta, artefatos intermediários e traces como saídas de primeira classe, tão importantes quanto o resultado final, porque sem eles não tem depuração, conformidade nem reprodutibilidade. Achei curioso ver isso num trabalho sobre agentes, porque é exatamente o argumento que a gente usa com aplicação: se não dá pra reconstruir o que aconteceu, não dá pra operar.
 
-#### Logging estruturado
-
-Log em texto livre até ajuda no começo, mas degrada rápido em incidentes. Sem estrutura, não há correlação confiável por `trace_id`, `request_id`, usuário ou serviço.
-
-#### Métricas e dashboards
-
-Sem métricas, ninguém enxerga latência, erro, throughput, saturação e consumo de recursos. Prometheus e Grafana não são acessórios; são parte do contrato operacional.
-
-#### Tracing distribuído e OpenTelemetry
-
-Em sistemas distribuídos, tracing é a única forma prática de enxergar a jornada da requisição entre serviços. OpenTelemetry virou o caminho mais pragmático para instrumentação consistente.
-
-**Exemplo de configuração de ambiente para OpenTelemetry**
+Log em texto livre ajuda no começo e atrapalha no primeiro incidente sério. Sem estrutura, não tem como correlacionar por `trace_id`, `request_id`, usuário ou serviço. Sem métrica, ninguém enxerga latência, erro, throughput ou saturação. Prometheus e Grafana não são enfeite, fazem parte do contrato operacional. E em sistema distribuído, tracing é o único jeito prático de seguir uma requisição entre serviços. Hoje o caminho mais simples pra isso é OpenTelemetry:
 
 ```yaml
 env:
@@ -409,8 +325,6 @@ env:
     value: service.namespace=platform,deployment.environment=prod
 ```
 
-**Exemplo de arquitetura de observabilidade**
-
 ```mermaid
 flowchart LR
     A[Aplicação] --> B[OpenTelemetry SDK]
@@ -421,32 +335,17 @@ flowchart LR
     A --> G[Logs estruturados]
 ```
 
-### Segurança
+## Segurança da aplicação
 
-A camada de segurança sofre diretamente quando a aplicação foi construída sem revisão séria de fundamentos.
+Quando a aplicação é feita sem revisão séria, a segurança é a primeira a sentir.
 
-#### JWT implementado incorretamente
+JWT validado pela metade é muito comum: assinatura ignorada, expiração mal tratada, `aud` inexistente, refresh token sem proteção. Autenticação sem autorização também: a aplicação sabe quem é o usuário, mas não checa o que ele pode fazer.
 
-É comum ver JWT validado de forma parcial: assinatura ignorada, expiração tratada mal, audience inexistente e refresh token sem proteção adequada.
+Além disso, a lista de sempre aparece com frequência: SQL injection por concatenação de string, XSS, SSRF por aceitar qualquer URL, upload sem validação de tipo e tamanho, CORS liberado pra tudo, nenhum rate limiting e dependências com CVE conhecida.
 
-#### Autorização inexistente
+Nada disso é detalhe. É o resultado de um projeto feito sem modelo mental de segurança. E é exatamente o tipo de regressão que, como lembra Xu (2026), passa despercebida até chegar perto de produção.
 
-Autenticação sem autorização é uma falha clássica. A aplicação reconhece o usuário, mas não valida o que ele pode ou não fazer.
-
-#### Falhas recorrentes de aplicação
-
-- SQL Injection por concatenação de string;
-- XSS por escaping insuficiente;
-- SSRF por consumo irrestrito de URL externa;
-- upload inseguro sem validação de tipo e tamanho;
-- CORS permissivo demais;
-- rate limiting inexistente;
-- secrets no repositório;
-- dependências desatualizadas com CVEs conhecidas.
-
-Essas falhas não são "detalhes". São resultado direto de um projeto que foi produzido sem modelo mental de segurança e sem revisão experiente. E são justamente o tipo de regressão de segurança que, como lembra o survey, costuma passar despercebida até chegar perto de produção.
-
-**Exemplo de Kubernetes Deployment com requisitos mínimos de operação**
+Um Deployment com o mínimo que eu espero ver:
 
 ```yaml
 apiVersion: apps/v1
@@ -505,7 +404,7 @@ spec:
                 command: ["sh", "-c", "sleep 10"]
 ```
 
-**Exemplo de Terraform para base de operação**
+E a base de infraestrutura versionada desde o início, mesmo que seja só o namespace:
 
 ```hcl
 terraform {
@@ -523,89 +422,54 @@ resource "kubernetes_namespace" "app" {
 }
 ```
 
-## Impactos na operação
+## O impacto na operação
 
-Quando uma aplicação chega nesse estado, o impacto não é apenas técnico. É organizacional.
+Quando uma aplicação chega nesse estado, o problema deixa de ser só técnico e passa a ser organizacional.
 
-### Operação mais lenta e mais cara
+Cada incidente exige ler código, mexer em infraestrutura, corrigir build e, muitas vezes, fazer alguma intervenção manual. O time de plataforma para de operar um sistema e passa a sustentar um protótipo em produção. Sem teste, contrato e observabilidade, toda mudança vira risco, e o time de produto começa a depender de janela de manutenção e hotfix.
 
-Cada incidente passa a exigir leitura de código, ajuste de infraestrutura, correção de build e, muitas vezes, intervenção manual. O time de plataforma deixa de operar um sistema e passa a sustentar um protótipo em produção.
+O diagnóstico também fica mais lento. Sem log estruturado, trace e métrica útil, o tempo pra achar a causa raiz cresce e a gente acaba investigando sintoma. Pior ainda quando ninguém no time de produto conhece o código a fundo, porque ninguém escreveu de fato.
 
-### Mudanças viram risco
+O pipeline sofre junto. Ele precisa compensar a falta de padrão, bloquear segredo, achar vulnerabilidade, validar build e segurar regressão. Vira algo complexo, caro e, não raramente, questionado por quem gerou o código.
 
-Sem testes, sem contratos e sem observabilidade, toda alteração parece arriscada. Isso desacelera times de produto e aumenta dependência de janelas de manutenção e hotfixes.
+E tem o custo que não aparece. O survey chama atenção para custos escondidos que a taxa de sucesso não mostra: retentativas, crescimento de contexto, tempo e intervenção humana. No onboarding é igual. A velocidade de geração aparece no relatório do time de produto. As horas de triagem, retrabalho e hotfix aparecem no backlog de outro time. Se a empresa só olha o primeiro número, vai sempre achar que a IA está saindo de graça.
 
-### Incidentes ficam mais difíceis de diagnosticar
+## A dívida técnica que vem junto
 
-Sem logs estruturados, sem tracing e sem métricas úteis, o tempo médio para identificar causa raiz cresce. O time investiga sintomas em vez de causas. E quando ninguém do time de produto entende a fundo o código que foi gerado, a investigação não tem a quem recorrer.
+Dívida técnica não é código feio. É uma conta que cresce quando se escolhe velocidade sem controle, e com IA mal usada ela cresce em várias frentes ao mesmo tempo. Tem a dívida de arquitetura, de um sistema que nasce sem fronteiras e fica caro de modularizar depois. Tem a operacional, por falta de sinais e contratos para operar. Tem a de segurança, com vulnerabilidade que entra cedo e se espalha. E tem a de plataforma, com o time de DevSecOps criando exceção e remendo sob pressão.
 
-### Pipeline deixa de ser guardrail e vira obstáculo
+Tem também uma que eu acho mais silenciosa: a dívida de conhecimento. Quando boa parte do código foi escrita por um agente e aceita sem revisão profunda, ninguém no time tem o modelo mental completo do sistema. O problema não está só no código, está na falta de gente capaz de explicá-lo.
 
-Quando a base é ruim, a pipeline sofre. Ela precisa compensar ausência de padrões, blindar segredos, detectar vulnerabilidades, validar build e ainda impedir regressões funcionais. O resultado é um pipeline complexo, caro e, muitas vezes, contestado por quem produziu o código.
+E como a IA acelera a criação dessa dívida, no curto prazo ela parece produtividade.
 
-### O custo escondido
+## Como evitar
 
-O survey de Xu chama atenção para custos que não aparecem em uma métrica de sucesso: retentativas, crescimento de contexto, tempo e intervenção humana. No onboarding acontece o mesmo. A velocidade de geração aparece no relatório do time de produto; as horas de triagem, retrabalho e hotfix aparecem no backlog de outro time. Se a organização só mede a primeira, vai sempre achar que a IA está saindo de graça.
+Evitar esse cenário não passa por proibir IA. Passa por colocar engenharia antes da automação. Uma coisa que me chamou atenção lendo o survey é que as recomendações que Xu (2026) faz para tornar *agentes* confiáveis são praticamente as mesmas que a gente faz para tornar *aplicações* confiáveis.
 
-## Como isso aumenta a dívida técnica
+**Defina um baseline de arquitetura antes de gerar código.** Fronteiras do sistema, modelo de estado, contratos de integração, padrão de persistência. E coloque isso como contexto para o agente, em arquivos de instrução no próprio repositório, em vez de deixar só na cabeça de quem desenhou.
 
-Dívida técnica não é só código feio. É uma obrigação acumulada que cresce quando a organização escolhe velocidade sem controle.
+**Ofereça templates e starters oficiais.** Skeleton de projeto, pipeline padrão, observabilidade já configurada, policy-as-code. Pro agente, um bom starter funciona como as interfaces estruturadas que o survey recomenda: limita o espaço de ação e reduz a chance de ele sair inventando.
 
-Com IA mal usada, a dívida aumenta em quatro dimensões:
+**Exija verificação, não só geração.** O padrão que o survey propõe para agentes de código é um loop explícito: roda teste e linter, analisa a falha, corrige e repete até passar, sempre com base em diagnóstico concreto. No processo do time, isso significa CI bloqueando código sem validação mínima e alguém que entende a regra de negócio revisando os testes.
 
-1. **Dívida de arquitetura**: o sistema nasce sem fronteiras e fica mais caro de modularizar depois.
-2. **Dívida operacional**: faltam sinais, contratos e previsibilidade para operar em produção.
-3. **Dívida de segurança**: vulnerabilidades entram cedo e ficam muito mais caras para corrigir depois de espalhadas.
-4. **Dívida de plataforma**: a equipe de DevSecOps precisa criar exceções, adaptar pipelines e construir remendos sob pressão.
+**Coloque segurança desde o primeiro commit.** SAST, SCA, secret scanning, container e IaC scanning, SBOM. No fluxo padrão, não numa etapa no fim.
 
-Existe ainda uma quinta, mais silenciosa: **dívida de conhecimento**. Quando boa parte do código foi escrita por um agente e aceita sem revisão profunda, ninguém no time tem o modelo mental completo do sistema. A dívida não está só no código; está na falta de pessoas capazes de explicá-lo.
+**Dê ao agente o mínimo de privilégio.** Sandbox, token com escopo reduzido, allowlist de ferramentas e aprovação humana para ação irreversível. O survey chama isso de *budgeted autonomy*, que eu traduziria como autonomia proporcional ao risco: quanto maior o impacto e menor a chance de desfazer, mais verificação antes de executar. Gerar um teste unitário pode ser autônomo. Mudar uma policy de IAM, não.
 
-O grande problema é que IA acelera a criação dessa dívida. E dívida criada rápido parece produtividade no curto prazo.
+**Projete para operar.** Sem health check, sem shutdown decente, com estado em memória e sem plano de escala, a aplicação não está pronta, ponto.
 
-## Como poderia ser evitado
+Para formalizar esse último item, eu me inspirei na ideia de *tool contracts* do survey, em que cada ferramenta do agente tem pré-condições, pós-condições e evidência para auditoria. Aplicado ao nosso caso, vira um **contrato de onboarding**, um checklist que a aplicação precisa cumprir antes de entrar no pipeline de produção:
 
-Evitar esse cenário não significa bloquear IA. Significa colocar engenharia antes da automação. E, curiosamente, as recomendações que a pesquisa sobre agentes faz para tornar *agentes* confiáveis são praticamente as mesmas que fazemos para tornar *aplicações* confiáveis.
+- [ ] Testes automatizados com asserts que fazem sentido, e os críticos revisados por alguém
+- [ ] Probes de startup, readiness e liveness que checam dependências de verdade
+- [ ] Tratamento de `SIGTERM` testado num rollout
+- [ ] Configuração em ConfigMap e Secret, nenhum segredo no repositório
+- [ ] Logs estruturados, métricas e traces com `trace_id` correlacionável
+- [ ] Imagem multi-stage, rodando como não-root, sem vulnerabilidade HIGH/CRITICAL
+- [ ] SBOM gerado e SCA aprovado
+- [ ] Registro de quais partes foram geradas por IA e de quem revisou
 
-### 1. Definir um baseline arquitetural
-
-Antes de gerar código, o time precisa definir as fronteiras do sistema, o modelo de estado, os contratos de integração e o padrão de persistência. Esse baseline deve virar contexto para o agente (por exemplo, em arquivos de instrução no repositório), e não ficar só na cabeça de quem desenhou.
-
-### 2. Criar templates e starters oficiais
-
-Times maduros não deixam cada projeto inventar sua própria forma de nascer. Eles disponibilizam skeletons, pipelines padrão, observabilidade padrão, policy-as-code e exemplos aprovados. Para um agente, um bom starter funciona como as interfaces estruturadas que o survey recomenda: restringe o espaço de ações possíveis e reduz a chance de desvio.
-
-### 3. Exigir loops de verificação, não só geração
-
-O padrão prático que o survey propõe para agentes de código é um loop explícito de verificação: rodar testes e linters, analisar a falha e corrigir até as checagens passarem, sempre com base em diagnósticos concretos. O mesmo vale para o processo do time: CI precisa bloquear código sem validação básica, e os testes precisam ser revisados por alguém que entenda a regra de negócio, não apenas gerados junto com o código.
-
-### 4. Integrar segurança desde o início
-
-SAST, SCA, secret scanning, container scanning, IaC scanning e SBOM devem fazer parte do fluxo padrão, não de uma etapa posterior.
-
-### 5. Dar ao agente o mínimo de privilégio
-
-Execução em sandbox, tokens com escopo mínimo, allowlist de ferramentas e aprovação humana para ações irreversíveis. O survey resume isso na ideia de **autonomia proporcional ao risco** (*budgeted autonomy*): quanto maior o impacto e menor a reversibilidade de uma ação, maior deve ser a verificação antes de executá-la. Gerar um teste unitário pode ser autônomo; alterar uma policy de IAM, não.
-
-### 6. Projetar a aplicação para operar
-
-Se ela não tem health checks, não é stateless, não respeita shutdown e não foi pensada para escalar, ela ainda não está pronta para produção.
-
-Uma forma útil de formalizar isso é inspirada na proposta de *tool contracts* do survey, em que cada ferramenta tem pré-condições, pós-condições e evidências de auditoria. No nosso contexto, é um **contrato de onboarding**: um conjunto mínimo de pré-condições que a aplicação precisa cumprir antes de entrar no pipeline de produção.
-
-| Pré-condição | Evidência esperada |
-|---|---|
-| Testes automatizados com asserts significativos | Relatório de cobertura e revisão humana dos testes críticos |
-| Health, readiness e startup probes reais | Endpoints que verificam dependências, não só retornam `200` |
-| Graceful shutdown | Tratamento de `SIGTERM` testado em rollout |
-| Configuração externa ao código | ConfigMaps e Secrets, sem segredos no repositório |
-| Logs estruturados, métricas e traces | Dashboards e `trace_id` correlacionável |
-| Imagem mínima e não-root | Dockerfile multi-stage e scan sem HIGH/CRITICAL |
-| Dependências conhecidas e verificadas | SBOM gerado e SCA aprovado |
-| Rastreabilidade da geração | Registro de quais partes foram geradas por IA e quem revisou |
-
-### 7. Tratar IA como copiloto, não como arquiteto
-
-IA pode sugerir, acelerar e padronizar. Mas a responsabilidade por design, trade-offs e operação continua humana. Isso inclui revisão técnica séria, threat modeling e decisão consciente sobre o que entra ou não no sistema. Até o survey, escrito do ponto de vista de quem constrói agentes, mantém as decisões de alto impacto com humanos e trata a taxa de intervenção humana como métrica a ser reportada, não como falha a ser escondida.
+Por último, **IA é copiloto, não arquiteto.** Ela sugere, acelera e padroniza, mas design, trade-off e operação continuam sendo responsabilidade de gente. Até o survey, escrito por quem constrói agentes, deixa as decisões de alto impacto com humanos e trata a taxa de intervenção humana como uma métrica a ser reportada, não como algo a esconder.
 
 ```mermaid
 flowchart TD
@@ -620,33 +484,25 @@ flowchart TD
     F -- reprovado --> D
 ```
 
-## Conclusão
+## Para fechar
 
-Equipes DevSecOps não estão ali para dizer "não". Elas existem para tornar software colocável em produção de forma segura, observável, escalável e sustentável.
+Time de DevSecOps não existe pra dizer "não". Existe pra fazer software ir pra produção de forma segura, observável e sustentável.
 
-Quando uma aplicação quase toda gerada por IA chega sem fundamentos de engenharia de software, o time não encontra apenas bugs. Encontra ausência de pensamento de sistema, ausência de disciplina arquitetural e ausência de preocupação com operação.
+Quando chega uma aplicação gerada quase toda por IA sem base de engenharia, o que a gente encontra não são só bugs. É falta de pensamento de sistema, de disciplina de arquitetura e de preocupação com operação. Por isso a conversa certa não é sobre culpar a IA, e sim sobre responsabilidade técnica. A IA acelera o trabalho bom e acelera o erro na mesma medida, e quem decide qual dos dois sai é quem está conduzindo.
 
-Por isso, a discussão correta não é sobre culpar IA. A discussão correta é sobre responsabilidade técnica. IA é excelente para acelerar trabalho, mas também acelera erros quando o humano que guia o processo não domina os fundamentos. Como resume Xu (2026), confiabilidade e governança são propriedades da stack inteira, e não do modelo isolado.
+O survey de Xu (2026) chega à mesma conclusão por outro caminho: confiabilidade e governança são da stack inteira, não do modelo. No fim, a diferença entre protótipo e software de produção continua sendo engenharia. Quando ela existe, a IA multiplica a capacidade do time. Quando não existe, o problema só fica mais rápido de criar e mais caro de corrigir.
 
-> **Uma aplicação que funciona não é necessariamente uma aplicação pronta para produção.**
+Uma aplicação que funciona não é necessariamente uma aplicação pronta para produção.
 
-## Considerações finais
+Se você quiser se aprofundar na parte de agentes, recomendo muito a leitura do [survey completo](https://arxiv.org/html/2601.01743v1). Ele vai bem além do que trouxe aqui, principalmente na parte de avaliação e nos desafios em aberto.
 
-Se há uma lição prática aqui, ela é simples: a diferença entre protótipo e software de produção continua sendo engenharia.
+## Referências
 
-Arquitetura continua sendo responsabilidade humana. System design continua sendo responsabilidade humana. Segurança continua sendo responsabilidade humana. E a missão de DevSecOps não é apenas construir pipelines; é transformar aplicações em ativos operáveis, auditáveis e resilientes.
-
-Quando essa base existe, a IA vira multiplicador de capacidade. Quando ela não existe, a IA apenas deixa o problema mais rápido, mais barato de criar e mais caro de corrigir. Na rotina da equipe em que atuo, isso significa mais triagem, mais retrabalho e mais esforço para transformar uma entrega frágil em algo realmente operável. Ou, nas palavras do survey, é o trabalho de fechar a distância entre demonstrações impressionantes e implantação robusta no mundo real.
-
-## Fontes e referências
-
-### Referência bibliográfica
+**Referência principal**
 
 - XU, Bin. **AI Agent Systems: Architectures, Applications, and Evaluation**. arXiv:2601.01743, 2026. Disponível em: [https://arxiv.org/html/2601.01743v1](https://arxiv.org/html/2601.01743v1)
 
-### Documentação técnica
-
-As referências abaixo foram usadas como base para boas práticas de arquitetura, Kubernetes, observabilidade e segurança da cadeia de software:
+**Documentação técnica usada nos exemplos**
 
 - [Kubernetes Documentation](https://kubernetes.io/docs/)
 - [Kubernetes: Configure Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
