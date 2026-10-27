@@ -36,9 +36,9 @@ O que mudou recentemente é que boa parte desse código não vem mais de um auto
 
 Em time experiente, isso é ganho de escala de verdade. O problema começa quando a velocidade de geração passa a ser tratada como se fosse maturidade de engenharia.
 
-No time em que atuo, e conversando com colegas de Platform Engineering e SRE de outras empresas, a história se repete: chega uma aplicação que "funciona" localmente e que, olhando com um pouco de cuidado, está longe de aguentar produção. O que deveria ser uma entrada simples no pipeline vira análise de arquitetura, de operação, de segurança e de observabilidade. Chega um conjunto de arquivos com cara de software e comportamento de protótipo.
+A pergunta que aparece na prática não é "a IA falhou"; é: "como a gente leva isso para produção sem virar uma operação de emergência?" Ao longo da minha experiência com DevOps e SRE, e em conversas com quem vive o mesmo dia a dia, esse cenário aparece com frequência: chega uma aplicação que "funciona" localmente e, olhando com um pouco de cuidado, está longe de aguentar produção. O que deveria ser uma entrada simples no pipeline vira análise de arquitetura, de operação, de segurança e de observabilidade. Chega um conjunto de arquivos com cara de software e comportamento de protótipo.
 
-Deixo minha posição clara logo de início: não estou culpando a IA. Estou falando de usar IA sem entender os fundamentos que continuam sustentando qualquer software sério.
+Não estou escrevendo para reclamar do uso de IA. Estou escrevendo porque a conversa precisa sair do campo da promessa e entrar no da operação real. O objetivo aqui é simples: mostrar um caminho útil para receber essas aplicações com menos risco, menos retrabalho e mais clareza sobre o que precisa ser validado antes de qualquer deploy.
 
 ## O que o survey de Xu (2026) diz sobre isso
 
@@ -71,7 +71,9 @@ Xu (2026) insiste que a segurança tem que ser avaliada ao longo de toda a traje
 
 Raramente o onboarding de uma aplicação gerada quase toda por IA começa com uma arquitetura limpa e um plano de operação. O que chega é um monte de sinais de que o software foi construído em cima da pergunta "como faço isso funcionar?", e nunca da pergunta "como isso sobrevive em produção?".
 
-Os mais comuns, pela minha experiência:
+A boa notícia é que isso não precisa virar uma crítica sem saída. O ponto central é simples: o problema não é a IA em si, e sim a falta de uma etapa de validação e de governança antes do serviço entrar em produção. Quando a equipe trata isso como uma etapa de disciplina operacional — e não como uma "queixa de plataforma" — a solução fica muito mais clara.
+
+Os sinais mais comuns, pela minha experiência, são:
 
 - **Repositório sem estrutura definida.** Só pra entender o fluxo e onde estão os pontos de falha já vai um bom tempo.
 - **Teste inexistente ou superficial.** Sem isso não tem CI confiável, nem rollback seguro.
@@ -83,7 +85,19 @@ Os mais comuns, pela minha experiência:
 - **Dependência desatualizada, ou que ninguém sabe de onde veio.**
 - **Nenhum registro de como o código foi gerado.** Não dá pra saber o que foi decisão do agente e o que alguém de fato revisou.
 
-Muitas vezes, o primeiro trabalho não é fazer deploy. É descobrir se aquilo pode virar algo operável sem reescrever do zero.
+Muitas vezes, o primeiro trabalho não é fazer deploy. É descobrir se aquilo pode virar algo operável sem reescrever do zero. E, para isso, a abordagem mais útil é bem direta: validar a aplicação como se ela já estivesse em produção, antes de tratá-la como produto pronto.
+
+### Uma abordagem útil para o time
+
+Em vez de tratar o app gerado por IA como uma entrega acabada, vale pensar em cinco critérios simples:
+
+1. **O sistema roda em ambiente parecido com produção?**
+2. **Ele tem testes mínimos que falham quando a regra quebra?**
+3. **Tem saúde, logs e métricas suficientes para diagnosticar problema?**
+4. **Os segredos e permissões estão controlados?**
+5. **A operação foi pensada antes do primeiro deploy?**
+
+Se a resposta para qualquer um desses pontos for "não", a próxima etapa não é reclamar — é fechar o gap com a menor mudança possível, de modo que o serviço fique seguro, observável e sustentável.
 
 ## Arquitetura
 

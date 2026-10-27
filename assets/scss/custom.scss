@@ -107,6 +107,24 @@ body {
   border-radius: 4px;
 }
 
+.article-content .mermaid,
+.mermaid {
+  margin: 2.4rem 0;
+  padding: 1.6rem;
+  border: 1px solid var(--card-separator-color);
+  border-radius: 12px;
+  background: var(--card-background);
+  overflow-x: auto;
+}
+
+.article-content .mermaid svg,
+.mermaid svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
 .section-title {
   font-family: var(--mono-font);
   font-size: 1.3rem;
