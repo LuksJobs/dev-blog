@@ -1,0 +1,32 @@
+{{- /*
+    Builds a pixel art version of an image resource (limited palette + light dithering).
+    Usage: partial "helper/pixel-avatar" (dict "Image" $img "Grid" 36 "Size" 300)
+    - Grid: how many "pixels" per side (smaller = chunkier)
+    - Size: output size, upscaled with nearest neighbor to keep hard edges
+    - Dither: error diffusion strength (0 = flat palette, used for the mosaic transition frames)
+*/ -}}
+{{- $img := .Image -}}
+{{- $grid := default 36 .Grid -}}
+{{- $size := default $grid .Size -}}
+{{- $dither := 0.6 -}}
+{{- if isset . "Dither" -}}{{- $dither = .Dither -}}{{- end -}}
+
+{{- /* Palette tuned for the avatar: darks, skin tones, and the background highlights */ -}}
+{{- $palette := slice
+    "#141018" "#2a1f24" "#3d2c2e" "#4f3a38" "#5e4a52"
+    "#6b3a35" "#8a4a40" "#a8604f" "#c27a62" "#d9977c" "#ecb99c" "#f6dcc8"
+    "#ffffff" "#c9f3fb" "#7fd6ef" "#3aa6d8" "#d4ec2a" "#e0457b" "#3a3f4a" "#6a6f7c"
+-}}
+
+{{- $pixel := $img.Fill (printf "%dx%d Center Box png" $grid $grid) -}}
+{{- $pixel = $pixel | images.Filter
+    (images.Saturation 10)
+    (images.Brightness 4)
+    (images.Dither (dict "colors" $palette "method" "FloydSteinberg" "strength" $dither))
+-}}
+
+{{- if ne $size $grid -}}
+    {{- $pixel = $pixel.Resize (printf "%dx%d NearestNeighbor png" $size $size) -}}
+{{- end -}}
+
+{{- return $pixel -}}

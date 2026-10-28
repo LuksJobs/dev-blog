@@ -2006,3 +2006,193 @@ body {
   line-height: 1.6;
   color: var(--card-text-color-secondary);
 }
+
+/* ==========================================================================
+   Pixel art avatar (revealed on hover)
+   32-bit style mosaic: coarse frames snap in one by one until the final
+   dithered sprite, then a quick RGB glitch and CRT scanlines.
+   ========================================================================== */
+.left-sidebar .site-avatar {
+  --frame-duration: 70ms;
+
+  a {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .site-avatar__pixel {
+    position: absolute;
+    inset: 0;
+    border-radius: 100%;
+    pointer-events: none;
+
+    /* CRT scanlines */
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.22) 0,
+        rgba(0, 0, 0, 0.22) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      opacity: 0;
+      transition: opacity 0s linear 0s;
+    }
+  }
+
+  /* Frames are stacked in DOM order (coarse -> fine); each one snaps in after the previous */
+  .site-logo--pixel {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    image-rendering: pixelated;
+    /* Leaving: finest frame disappears first, so the mosaic plays in reverse */
+    transition: opacity 0s linear calc((var(--frames) - 1 - var(--i)) * var(--frame-duration) * 0.7);
+  }
+
+  &:hover,
+  &:focus-within {
+    .site-logo--pixel {
+      opacity: 1;
+      transition-delay: calc(var(--i) * var(--frame-duration));
+    }
+
+    .site-avatar__pixel {
+      animation: avatar-glitch 0.24s steps(3) calc((var(--frames) - 1) * var(--frame-duration));
+
+      &::after {
+        opacity: 1;
+        transition-delay: calc((var(--frames) - 1) * var(--frame-duration));
+      }
+    }
+  }
+}
+
+@keyframes avatar-glitch {
+  0% {
+    filter: brightness(1.6) drop-shadow(3px 0 rgba(255, 0, 90, 0.75)) drop-shadow(-3px 0 rgba(0, 220, 255, 0.75));
+    transform: translateX(-2px);
+  }
+
+  50% {
+    filter: brightness(1.15) drop-shadow(-2px 0 rgba(255, 0, 90, 0.6)) drop-shadow(2px 0 rgba(0, 220, 255, 0.6));
+    transform: translateX(2px);
+  }
+
+  100% {
+    filter: none;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .left-sidebar .site-avatar {
+    --frame-duration: 0ms;
+
+    &:hover .site-avatar__pixel,
+    &:focus-within .site-avatar__pixel {
+      animation: none;
+    }
+  }
+}
+
+/* ==========================================================================
+   Collapsible left sidebar (desktop)
+   ========================================================================== */
+.sidebar-collapse-toggle {
+  display: none;
+  align-self: flex-end;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-bottom: calc(var(--sidebar-element-separation) * -0.5);
+  border: 1px solid var(--card-separator-color);
+  border-radius: 8px;
+  background: var(--card-background);
+  color: var(--card-text-color-tertiary);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.6;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--accent-color);
+    border-color: var(--accent-ring);
+    background: var(--accent-soft);
+  }
+
+  @include respond(md) {
+    display: inline-flex;
+  }
+}
+
+@include respond(md) {
+  .container .left-sidebar {
+    transition: max-width 0.2s ease;
+  }
+
+  [data-sidebar="collapsed"] {
+    .container .left-sidebar {
+      --left-sidebar-max-width: 56px;
+      --sidebar-avatar-size: 44px;
+      align-items: center;
+
+      header {
+        align-items: center;
+      }
+
+      .site-avatar .emoji,
+      .site-meta,
+      .lang-switch,
+      .social-menu {
+        display: none;
+      }
+    }
+
+    .sidebar-collapse-toggle {
+      align-self: center;
+      margin-bottom: 0;
+
+      svg {
+        transform: rotate(180deg);
+      }
+    }
+
+    #main-menu {
+      align-items: center;
+
+      li {
+        width: auto;
+      }
+
+      span {
+        display: none;
+      }
+    }
+
+    #dark-mode-toggle span {
+      display: none;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container .left-sidebar,
+  .sidebar-collapse-toggle svg {
+    transition: none;
+  }
+}

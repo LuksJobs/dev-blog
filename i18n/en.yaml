@@ -139,3 +139,9 @@ archives:
         other: By category
     timeline:
         other: Timeline
+
+sidebar:
+    collapse:
+        other: Collapse menu
+    expand:
+        other: Expand menu

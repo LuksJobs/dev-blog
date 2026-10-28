@@ -15,6 +15,7 @@ import { setupSmoothAnchors } from "ts/smoothAnchors";
 import setupShare from 'ts/share';
 import setupReadingProgress from 'ts/readingProgress';
 import setupXFeed from 'ts/xFeed';
+import setupSidebarCollapse from 'ts/sidebarCollapse';
 
 let Stack = {
     init: () => {
@@ -22,6 +23,9 @@ let Stack = {
          * Bind menu event
          */
         menu();
+
+        // Collapsible left sidebar (desktop)
+        setupSidebarCollapse();
 
         // Share/Repost button (Web Share API with clipboard fallback)
         setupShare();

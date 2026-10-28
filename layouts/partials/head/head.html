@@ -18,9 +18,34 @@
     <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink | safeURL }}">
 {{- end -}}
 
-{{ with .Site.Params.favicon }}
-    <link rel="shortcut icon" href="{{ . }}" />
+{{- /* Favicon: pixel art version of the local sidebar avatar, falling back to params.favicon */ -}}
+{{- $avatar := false -}}
+{{- with .Site.Params.sidebar.avatar -}}
+    {{- if and (default true .enabled) .local -}}
+        {{- $avatar = resources.Get .src -}}
+    {{- end -}}
+{{- end -}}
+{{ if $avatar }}
+    {{- $favicon := partial "helper/pixel-avatar" (dict "Image" $avatar "Grid" 32) -}}
+    {{- $touchIcon := partial "helper/pixel-avatar" (dict "Image" $avatar "Grid" 36 "Size" 180) -}}
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ $favicon.RelPermalink }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ $touchIcon.RelPermalink }}" />
+{{ else }}
+    {{ with .Site.Params.favicon }}
+        <link rel="shortcut icon" href="{{ . }}" />
+    {{ end }}
 {{ end }}
+
+{{- /* Restore the collapsed sidebar before first paint to avoid a layout jump */ -}}
+<script>
+    (function() {
+        try {
+            if (localStorage.getItem('StackSidebarCollapsed') === 'true') {
+                document.documentElement.dataset.sidebar = 'collapsed';
+            }
+        } catch (e) {}
+    })();
+</script>
 
 {{- template "_internal/google_analytics.html" . -}}
 {{- partial "head/custom.html" . -}}

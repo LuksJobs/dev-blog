@@ -5,6 +5,13 @@
         </span>
     </button>
 
+    <button class="sidebar-collapse-toggle" type="button" id="sidebar-collapse-toggle"
+        aria-controls="main-menu" aria-expanded="true"
+        aria-label="{{ T `sidebar.collapse` }}" title="{{ T `sidebar.collapse` }}"
+        data-label-collapse="{{ T `sidebar.collapse` }}" data-label-expand="{{ T `sidebar.expand` }}">
+        {{ partial "helper/icon" "layout-sidebar-left-collapse" }}
+    </button>
+
     <header>
         {{ with .Site.Params.sidebar.avatar }}
             {{ if (default true .enabled) }}
@@ -19,6 +26,19 @@
                         {{ $avatarResized := $avatar.Resize "300x" }}
                         <img src="{{ $avatarResized.RelPermalink }}" width="{{ $avatarResized.Width }}"
                             height="{{ $avatarResized.Height }}" class="site-logo" loading="lazy" alt="Avatar">
+
+                        {{/* Pixel art version, revealed on hover through a 32-bit style mosaic (coarse -> fine) */}}
+                        {{ $frames := slice 6 12 18 24 }}
+                        <span class="site-avatar__pixel" aria-hidden="true" style="--frames: {{ add (len $frames) 1 }}">
+                            {{ range $i, $grid := $frames }}
+                                {{ $frame := partial "helper/pixel-avatar" (dict "Image" $avatar "Grid" $grid "Size" 288 "Dither" 0) }}
+                                <img src="{{ $frame.RelPermalink }}" width="{{ $frame.Width }}" height="{{ $frame.Height }}"
+                                    class="site-logo site-logo--pixel" style="--i: {{ $i }}" loading="lazy" alt="">
+                            {{ end }}
+                            {{ $avatarPixel := partial "helper/pixel-avatar" (dict "Image" $avatar "Grid" 36 "Size" 288) }}
+                            <img src="{{ $avatarPixel.RelPermalink }}" width="{{ $avatarPixel.Width }}" height="{{ $avatarPixel.Height }}"
+                                class="site-logo site-logo--pixel" style="--i: {{ len $frames }}" loading="lazy" alt="">
+                        </span>
                     {{ else }}
                         {{ errorf "Failed loading avatar from %q" . }}
                     {{ end }}
@@ -64,7 +84,7 @@
         {{ range .Site.Menus.main }}
         {{ $active := or (eq $currentPage.Title .Name) (or ($currentPage.HasMenuCurrent "main" .) ($currentPage.IsMenuCurrent "main" .)) }}
         <li {{ if $active }} class='current' {{ end }}>
-            <a href='{{ .URL }}' {{ if eq .Params.newTab true }}target="_blank"{{ end }}>
+            <a href='{{ .URL }}' title="{{ .Name }}" {{ if eq .Params.newTab true }}target="_blank"{{ end }}>
                 {{ $icon := default .Pre .Params.Icon }}
                 {{ if .Pre }}
                     {{ warnf "Menu item [%s] is using [pre] field to set icon, please use [params.icon] instead.\nMore information: https://docs.stack.jimmycai.com/configuration/custom-menu.html" .URL }}

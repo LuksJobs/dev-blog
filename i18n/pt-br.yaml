@@ -133,3 +133,9 @@ archives:
         other: Por categoria
     timeline:
         other: Linha do tempo
+
+sidebar:
+    collapse:
+        other: Recolher menu
+    expand:
+        other: Expandir menu
