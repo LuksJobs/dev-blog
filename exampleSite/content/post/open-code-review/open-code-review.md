@@ -35,7 +35,7 @@ Não é um projeto de fim de semana. Durante cerca de dois anos ele foi o assist
 Na prática, é uma CLI (`ocr`) que lê o diff do Git, manda os arquivos alterados para um LLM configurável por meio de um agente com ferramentas e devolve comentários presos à linha exata do problema.
 
 - **Revisa o diff** do Git (staged, unstaged e untracked), de uma branch contra outra ou de um commit específico.
-- **Traz regras prontas** para vários tipos de linguagem: ponteiro nulo, thread-safety, XSS e SQL injection, entre outras.
+- **Traz regras prontas** por linguagem: ponteiro nulo, thread-safety, XSS e SQL injection, entre outras. A cobertura varia de linguagem para linguagem, como mostro no teste mais abaixo.
 - **Busca contexto além do diff.** Ele lê o arquivo inteiro, pesquisa no codebase e olha os outros arquivos alterados no mesmo PR.
 - **Escaneia código sem diff** com o `ocr scan`, útil para auditar um módulo legado inteiro.
 - **Funciona com qualquer endpoint compatível com OpenAI ou Anthropic.**
@@ -153,6 +153,70 @@ ocr delegate rule <arquivos>
 
 É um bom ponto de partida para testar a ferramenta sem mexer em credenciais nem em custo.
 
+## Testei na prática (sem chave de API)
+
+Quis ver o que a ferramenta entrega de fato antes de recomendar. Instalei a versão **1.13.3** no meu Windows 11 (Git 2.56, Node 24) e montei um repositório de teste: uma API Express de pedidos e clientes, com um PR (`feature/customer-portal`) de 71 linhas.
+
+> As imagens desta seção mostram a saída real dos comandos que rodei, renderizada numa janela de terminal para facilitar a leitura. O texto não foi editado. O prompt da janela é apenas ilustrativo.
+
+![Ambiente do teste: OpenCodeReview v1.13.3 instalado e o repositório ocr-demo com dois commits, a base da API e o PR feature/customer-portal com 71 linhas novas em 3 arquivos.](ocr-teste-01-setup.png)
+
+Nesse PR eu **plantei 8 problemas de propósito** e anotei o gabarito antes de rodar qualquer comando:
+
+| # | Problema plantado | Onde |
+|---|---|---|
+| 1 | SQL injection (concatenação de `status` na query) | `orders.js` |
+| 2 | Paginação errada (`offset = page * pageSize` pula a primeira página) | `orders.js` |
+| 3 | Chave de API de pagamento hardcoded | `customers.js` |
+| 4 | XSS refletido (`name` da query direto no HTML) | `customers.js` |
+| 5 | Null dereference (`customer` pode não existir) | `customers.js` |
+| 6 | Path traversal + IDOR no download de faturas | `customers.js` |
+| 7 | Race condition no saque (checa saldo, cobra e só depois debita) | `customers.js` |
+| 8 | Handlers `async` sem tratamento de erro, `fetch` sem checar `response.ok` | `customers.js` |
+
+Fiz o teste **sem nenhuma chave de API**, usando o modo delegação. Isso tem uma consequência importante: sem LLM, o OCR executa só a parte determinística, ou seja, decide **o que** revisar e **com quais regras**. O julgamento fica com o agente hospedeiro. Então este teste **não mede** precisão, recall nem consumo de tokens do benchmark. Ele mostra a base sobre a qual o modelo trabalha.
+
+### Seleção de arquivos
+
+![ocr delegate preview: o OCR calcula o merge-base entre main e a branch do PR e lista os 3 arquivos alterados, todos marcados para revisão (3 reviewable / 3 total).](ocr-teste-02-preview.png)
+
+Aqui está a promessa de "não pular arquivo": a lista é calculada pelo código a partir do merge-base, não pelo modelo. Os 3 arquivos do PR entraram.
+
+### As regras que ele aplica
+
+![ocr delegate rule: a saída completa das regras embutidas que o OCR entrega ao modelo para arquivos JS/TS. Tem seções de React, async e segurança de front-end (XSS, innerHTML, eval), mas nenhuma menção a SQL, caminhos de arquivo ou concorrência.](ocr-teste-03-regras-js.png)
+
+Os três arquivos caíram no mesmo grupo de regras, o de JS/TS. Isso também é a parte determinística: a regra é escolhida pelo padrão do arquivo, não pela memória do modelo.
+
+### O que o teste revelou: a cobertura depende da linguagem
+
+Cruzando o gabarito com as regras de JS:
+
+| # | Problema | Regra explícita para JS? |
+|---|---|---|
+| 3 | Segredo hardcoded | ✅ *Sensitive Information* e *Hardcoding* |
+| 4 | XSS | ✅ *XSS Protection* |
+| 5 | Null dereference | ✅ *Null Checks* |
+| 8 | Erros async não tratados | ✅ *Async Handling: Error Handling* |
+| 1 | SQL injection | ❌ não mencionado |
+| 2 | Paginação errada | ❌ (bug de lógica, nenhuma regra cobre) |
+| 6 | Path traversal / IDOR | ❌ não mencionado |
+| 7 | Race condition | ❌ não mencionado |
+
+**4 de 8** problemas têm uma regra explícita apontando para eles. O conjunto de JS é claramente voltado para front-end: tem seção inteira de React, `innerHTML` e `document.write`, mas nada sobre SQL, caminhos de arquivo ou concorrência no back-end.
+
+Para comparar, rodei `ocr rules check` em arquivos de outras linguagens.
+
+![Contagem de linhas das regras embutidas que citam "sql", "traversal" ou "check-then-act": 0 em JS, 5 em Go, 1 em Java e 3 em Python. Embaixo, as linhas das regras de Go. Nem toda menção é sobre injeção (sql.Rows, por exemplo, trata de fechar recursos), mas a regra de Go pede explicitamente validação de SQL, paths e URLs montados com entrada não confiável.](ocr-teste-04-cobertura.png)
+
+ As regras de **Go** pedem explicitamente para checar "SQL, shell commands, URLs, paths [...] assembled from untrusted input" e *check-then-act*. As de **Java** e **Python** têm seções de thread-safety com *check-then-act*. Ou seja, a lista "ponteiro nulo, thread-safety, XSS e SQL injection" do README é verdadeira **para o conjunto de linguagens**, mas não vale igualmente para cada uma.
+
+Isso não quer dizer que o modelo não vá encontrar a SQL injection num arquivo JS. Um LLM decente provavelmente encontra, por julgamento próprio. Mas nesse caso a detecção depende do modelo, não da regra, e é exatamente essa variação que a arquitetura do OCR tenta eliminar.
+
+**Na prática:** se o seu back-end é Node, vale escrever regras próprias (o OCR aceita um arquivo de regras via `--rule`) cobrindo injeção, path traversal, autorização e concorrência. Sem isso, você está contando com o modelo justamente nos pontos mais críticos de um back-end.
+
+> Para a revisão completa, com os comentários na linha e as métricas de tokens e tempo, é preciso configurar um provedor de LLM (`ocr config provider`). Esse é o próximo teste que pretendo fazer.
+
 ## Onde ele se encaixa num pipeline DevSecOps
 
 Ele não substitui SAST, SCA, linters nem revisão humana. Ele se soma a eles:
@@ -170,6 +234,7 @@ E isso fica ainda mais relevante agora, com cada vez mais código gerado por IA 
 - **Recall menor.** Ele vai deixar passar coisas. Não trate o "nenhum comentário" como garantia.
 - **Benchmark próprio.** Os números são da Alibaba, com um dataset da Alibaba. Valide no seu contexto.
 - **Custo e dados.** Fora do modo delegação, o código vai para o provedor de LLM que você configurar. Em ambientes regulados, avalie usar um endpoint interno ou self-hosted.
+- **Regras desiguais entre linguagens.** No meu teste, as regras de JS não mencionam SQL injection, path traversal nem concorrência. Em back-end Node, complemente com regras próprias.
 - **Dependência de Git 2.41+.** Imagens antigas de runner de CI podem precisar de atualização.
 
 ## Conclusão
