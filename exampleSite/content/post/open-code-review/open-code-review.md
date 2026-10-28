@@ -159,7 +159,7 @@ Quis ver o que a ferramenta entrega de fato antes de recomendar. Instalei a vers
 
 > As imagens desta seção mostram a saída real dos comandos que rodei, renderizada numa janela de terminal para facilitar a leitura. O texto não foi editado. O prompt da janela é apenas ilustrativo.
 
-![Ambiente do teste: OpenCodeReview v1.13.3 instalado e o repositório ocr-demo com dois commits, a base da API e o PR feature/customer-portal com 71 linhas novas em 3 arquivos.](ocr-teste-01-setup.png)
+![Ambiente do teste: OpenCodeReview v1.13.3 instalado e o repositório ocr-demo com dois commits, a base da API e o PR feature/customer-portal com 71 linhas novas em 3 arquivos.](https://i.imgur.com/dDgkE9U.png)
 
 Nesse PR eu **plantei 8 problemas de propósito** e anotei o gabarito antes de rodar qualquer comando:
 
@@ -178,13 +178,13 @@ Fiz o teste **sem nenhuma chave de API**, usando o modo delegação. Isso tem um
 
 ### Seleção de arquivos
 
-![ocr delegate preview: o OCR calcula o merge-base entre main e a branch do PR e lista os 3 arquivos alterados, todos marcados para revisão (3 reviewable / 3 total).](ocr-teste-02-preview.png)
+![ocr delegate preview: o OCR calcula o merge-base entre main e a branch do PR e lista os 3 arquivos alterados, todos marcados para revisão (3 reviewable / 3 total).](https://i.imgur.com/wrzVnWT.png)
 
 Aqui está a promessa de "não pular arquivo": a lista é calculada pelo código a partir do merge-base, não pelo modelo. Os 3 arquivos do PR entraram.
 
 ### As regras que ele aplica
 
-![ocr delegate rule: a saída completa das regras embutidas que o OCR entrega ao modelo para arquivos JS/TS. Tem seções de React, async e segurança de front-end (XSS, innerHTML, eval), mas nenhuma menção a SQL, caminhos de arquivo ou concorrência.](ocr-teste-03-regras-js.png)
+![ocr delegate rule: a saída completa das regras embutidas que o OCR entrega ao modelo para arquivos JS/TS. Tem seções de React, async e segurança de front-end (XSS, innerHTML, eval), mas nenhuma menção a SQL, caminhos de arquivo ou concorrência.](https://i.imgur.com/Wk6Sw1x.png)
 
 Os três arquivos caíram no mesmo grupo de regras, o de JS/TS. Isso também é a parte determinística: a regra é escolhida pelo padrão do arquivo, não pela memória do modelo.
 
@@ -207,7 +207,7 @@ Cruzando o gabarito com as regras de JS:
 
 Para comparar, rodei `ocr rules check` em arquivos de outras linguagens.
 
-![Contagem de linhas das regras embutidas que citam "sql", "traversal" ou "check-then-act": 0 em JS, 5 em Go, 1 em Java e 3 em Python. Embaixo, as linhas das regras de Go. Nem toda menção é sobre injeção (sql.Rows, por exemplo, trata de fechar recursos), mas a regra de Go pede explicitamente validação de SQL, paths e URLs montados com entrada não confiável.](ocr-teste-04-cobertura.png)
+![Contagem de linhas das regras embutidas que citam "sql", "traversal" ou "check-then-act": 0 em JS, 5 em Go, 1 em Java e 3 em Python. Embaixo, as linhas das regras de Go. Nem toda menção é sobre injeção (sql.Rows, por exemplo, trata de fechar recursos), mas a regra de Go pede explicitamente validação de SQL, paths e URLs montados com entrada não confiável.](https://i.imgur.com/PMoScF8.png)
 
  As regras de **Go** pedem explicitamente para checar "SQL, shell commands, URLs, paths [...] assembled from untrusted input" e *check-then-act*. As de **Java** e **Python** têm seções de thread-safety com *check-then-act*. Ou seja, a lista "ponteiro nulo, thread-safety, XSS e SQL injection" do README é verdadeira **para o conjunto de linguagens**, mas não vale igualmente para cada uma.
 
