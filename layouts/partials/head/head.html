@@ -36,14 +36,37 @@
     {{ end }}
 {{ end }}
 
-{{- /* Restore the collapsed sidebar before first paint to avoid a layout jump */ -}}
+{{- /*
+    Restore the collapsed sidebar before first paint to avoid a layout jump.
+    Posts always open collapsed (reading mode); elsewhere the saved preference applies.
+    Crossing between a post and another page sets data-sidebar-intro so the change is animated.
+*/ -}}
+{{- $isPost := and .IsPage (in .Site.Params.mainSections .Section) -}}
 <script>
     (function() {
-        try {
-            if (localStorage.getItem('StackSidebarCollapsed') === 'true') {
-                document.documentElement.dataset.sidebar = 'collapsed';
-            }
-        } catch (e) {}
+        var root = document.documentElement;
+        var lastState = null;
+        try { lastState = sessionStorage.getItem('StackSidebarLastState'); } catch (e) {}
+        var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        {{- if $isPost }}
+        root.dataset.sidebarMode = 'reading';
+        if (lastState === 'expanded' && !reducedMotion) {
+            /* Came from a page with the sidebar open: show it, then animate it away (sidebarCollapse.ts) */
+            root.dataset.sidebarIntro = 'collapse';
+        } else {
+            root.dataset.sidebar = 'collapsed';
+        }
+        {{- else }}
+        var collapsed = false;
+        try { collapsed = localStorage.getItem('StackSidebarCollapsed') === 'true'; } catch (e) {}
+        if (collapsed) {
+            root.dataset.sidebar = 'collapsed';
+        } else if (lastState === 'collapsed' && !reducedMotion) {
+            /* Left a post (sidebar retracted): start collapsed, then animate it back open (sidebarCollapse.ts) */
+            root.dataset.sidebar = 'collapsed';
+            root.dataset.sidebarIntro = 'expand';
+        }
+        {{- end }}
     })();
 </script>
 

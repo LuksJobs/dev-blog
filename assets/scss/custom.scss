@@ -2141,8 +2141,37 @@ body {
 }
 
 @include respond(md) {
+  /* Two-phase animation driven by sidebarCollapse.ts: labels fade (150ms), column resizes (300ms) */
   .container .left-sidebar {
-    transition: max-width 0.2s ease;
+    transition: max-width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    .site-avatar {
+      transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .site-avatar .emoji,
+    .site-meta,
+    .lang-switch,
+    .social-menu,
+    #main-menu span {
+      transition: opacity 0.15s ease;
+    }
+  }
+
+  [data-sidebar-anim="fade"] .container .left-sidebar {
+    .site-avatar .emoji,
+    .site-meta,
+    .lang-switch,
+    .social-menu,
+    #main-menu span {
+      opacity: 0;
+    }
+
+    /* Keeps labels on one line while the column is still narrow */
+    #main-menu a,
+    .site-meta {
+      white-space: nowrap;
+    }
   }
 
   [data-sidebar="collapsed"] {
@@ -2192,7 +2221,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .container .left-sidebar,
+  .container .left-sidebar *,
   .sidebar-collapse-toggle svg {
-    transition: none;
+    transition: none !important;
   }
 }

@@ -24,9 +24,6 @@ let Stack = {
          */
         menu();
 
-        // Collapsible left sidebar (desktop)
-        setupSidebarCollapse();
-
         // Share/Repost button (Web Share API with clipboard fallback)
         setupShare();
 
@@ -165,6 +162,9 @@ let Stack = {
         new StackColorScheme(document.getElementById('dark-mode-toggle'));
     }
 }
+
+// Collapsible left sidebar (desktop): runs before `load` so the post intro doesn't wait for images
+window.addEventListener('DOMContentLoaded', setupSidebarCollapse);
 
 window.addEventListener('load', () => {
     setTimeout(function () {
